@@ -25,7 +25,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/SarderLab/HistoLens">
-    <img src="Assorted_Images/Logo.png" alt="Logo" width="80" height="80">
+    <img src="Assorted_Images/Logo.png" alt="Logo" width="150" height="150">
   </a>
 
 <h3 align="center">HistoLens</h3>
@@ -67,9 +67,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/SarderLab/HistoLens/Assorted_Images/Example_Screenshot_HighRankedFeatures.png)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+[![Product Name Screen Shot][product-screenshot]]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
