@@ -66,8 +66,18 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+<br />
+<div align="center">
+  <a href="https://github.com/SarderLab/HistoLens">
+    <img src="Assorted_Images/Example_Screenshot_HighRankedFeatures.png" alt="Logo" width="200" height="150">
+  </a>
 
-[![Product Name Screen Shot][product-screenshot]]
+<h3 align="center">HistoLens</h3>
+
+  <p align="center">
+    A user friendly GUI for in-depth quantitative analysis of histological image data
+  </p>
+</div>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
