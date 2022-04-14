@@ -69,7 +69,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/SarderLab/HistoLens">
-    <img src="Assorted_Images/Example_Screenshot_HighRankedFeatures.png" alt="Logo" width="900" height="800">
+    <img src="Assorted_Images/Example_Screenshot_HighRankedFeatures.png" alt="Logo" width="950" height="800">
   </a>
 
 <h3 align="center">HistoLens</h3>
