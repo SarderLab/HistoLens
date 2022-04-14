@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Slides>
+   <Slide_Directory>C:\Users\spborder\Desktop\HistoLens_Codes\Use_Case_Slides_Avi\Slides</Slide_Directory>
+   <Structure>
+      <Glomeruli>
+         <AnnotationID>1</AnnotationID>
+         <MPP/>
+         <CompartmentSegmentation>
+            <Stain>H PAS</Stain>
+            <PAS>
+               <Channel>2</Channel>
+               <Threshold>18</Threshold>
+               <MinSize>45</MinSize>
+               <Order>2</Order>
+            </PAS>
+            <Luminal>
+               <Channel>1</Channel>
+               <Threshold>0</Threshold>
+               <MinSize>0</MinSize>
+               <Order>3</Order>
+            </Luminal>
+            <Nuclei>
+               <Channel>1</Channel>
+               <Threshold>175</Threshold>
+               <MinSize>30</MinSize>
+               <Order>1</Order>
+            </Nuclei>
+         </CompartmentSegmentation>
+         <FeatureSet>C:\Users\spborder\Desktop\HistoLens_Codes\Use_Case_Slides_Avi\Slides\Glomeruli_Features.csv</FeatureSet>
+         <FeatureRanks>
+            <Disease_Label_Amyloidosis>C:\Users\spborder\Desktop\HistoLens_Codes\Use_Case_Slides_Avi\Slides\Disease_Label_Amyloidosis.csv</Disease_Label_Amyloidosis>
+            <Disease_Label_DM_glomerulopathy>C:\Users\spborder\Desktop\HistoLens_Codes\Use_Case_Slides_Avi\Slides\Disease_Label_DM_glomerulopathy.csv</Disease_Label_DM_glomerulopathy>
+            <Disease_Label_Minimal_Change_Disease>C:\Users\spborder\Desktop\HistoLens_Codes\Use_Case_Slides_Avi\Slides\Disease_Label_Minimal_Change_Disease.csv</Disease_Label_Minimal_Change_Disease>
+         </FeatureRanks>
+      </Glomeruli>
+   </Structure>
+</Slides>

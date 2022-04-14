@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SAND_Slides>
+   <Slide_Directory>D:\HistoLens_Codes\SAND_Slides</Slide_Directory>
+   <Structure>
+      <SANDGloms>
+         <AnnotationID>1</AnnotationID>
+         <MPP>0.2253</MPP>
+         <CompartmentSegmentation>
+            <Stain>H PAS</Stain>
+            <PAS>
+               <Channel>2</Channel>
+               <Threshold>10</Threshold>
+               <MinSize>60</MinSize>
+               <Order>2</Order>
+            </PAS>
+            <Luminal>
+               <Channel>1</Channel>
+               <Threshold>0</Threshold>
+               <MinSize>0</MinSize>
+               <Order>3</Order>
+            </Luminal>
+            <Nuclei>
+               <Channel>1</Channel>
+               <Threshold>200</Threshold>
+               <MinSize>45</MinSize>
+               <Order>1</Order>
+            </Nuclei>
+         </CompartmentSegmentation>
+         <FeatureSet>C:\Users\spborder\Desktop\HistoLens_Codes\SAND_Slides\SANDGloms_Features.csv</FeatureSet>
+         <LabelFile>C:\Users\spborder\Desktop\HistoLens_Codes\SAND_Slides\Labels\Sand_Labels.csv</LabelFile>
+         <LabelType>slide</LabelType>
+         <FileLabelCol>Filename</FileLabelCol>
+         <ClassLabelCol>multi</ClassLabelCol>
+         <FeatureRanks>
+            <Treatment>D:\HistoLens_Codes\SAND_Slides\Treatment.csv</Treatment>
+            <Group_G0>D:\HistoLens_Codes\SAND_Slides\Group_G0.csv</Group_G0>
+            <Group_G1>D:\HistoLens_Codes\SAND_Slides\Group_G1.csv</Group_G1>
+            <Group_G2>D:\HistoLens_Codes\SAND_Slides\Group_G2.csv</Group_G2>
+            <Group_Littermate>D:\HistoLens_Codes\SAND_Slides\Group_Littermate.csv</Group_Littermate>
+            <Sex>D:\HistoLens_Codes\SAND_Slides\Sex.csv</Sex>
+            <SlideQualityComments_Blurry>D:\HistoLens_Codes\SAND_Slides\SlideQualityComments_Blurry.csv</SlideQualityComments_Blurry>
+            <SlideQualityComments_DarkCracked>D:\HistoLens_Codes\SAND_Slides\SlideQualityComments_DarkCracked.csv</SlideQualityComments_DarkCracked>
+            <SlideQualityComments_DarkSmudge>D:\HistoLens_Codes\SAND_Slides\SlideQualityComments_DarkSmudge.csv</SlideQualityComments_DarkSmudge>
+            <SlideQualityComments_Great>D:\HistoLens_Codes\SAND_Slides\SlideQualityComments_Great.csv</SlideQualityComments_Great>
+            <SlideQualityComments_SlightBlur>D:\HistoLens_Codes\SAND_Slides\SlideQualityComments_SlightBlur.csv</SlideQualityComments_SlightBlur>
+         </FeatureRanks>
+      </SANDGloms>
+   </Structure>
+</SAND_Slides>
