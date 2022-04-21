@@ -103,9 +103,26 @@ Written and compiled using Matlab R2022a
 
 ### Installation
 
-1. Access app installer from [this link](https://example.com)
-2. Double click on installer file.
-3. Follow steps in installation using Administrator permissions when necessary.
+1. Download HistoLens_Demo_Files from [this link](https://buffalo.box.com/s/ifvp6mu9spcnzn8tag2gkq2k7lmn50n5)
+2. Access app installer from HistoLens_Demo_Files/Compiled_Application_Installer/
+3. Double click on installer file.
+4. Follow steps in installation using Administrator permissions when necessary.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### Using HistoLens
+1. Look at the "HistoLens_Demo_Experiment_File.xml", edit file paths to match download location.
+2. Double click on HistoLens.exe and click on "Input Files" at the top once it loads.
+3. Click on "HistoLens Experiment File" in the "Select Type of Input" panel
+4. Click on "Select Experiment File" button and select the edited "HistoLens_Demo_Experiment_File.xml" file.
+5. Click "Done" after other fields in the File Input window automatically populate.
+6. Back in the main window, click "Go!" button.
+7. Select different sub-compartments under the "Compartment" list to access features of that sub-compartment.
+8. Selecting different feature types under the "Feature Type" list will show all of the individual quantitative features that are grouped under that category.
+9. To view the distribution of individual features, click on the "View Specific Feature" button.
+10. To view all features describing a feature category of a given sub-compartment (ex: all Nuclear Color features), click on "View Feature Type" button.
+11. Cycle through images using either the "Next Image" and "Previous Image" buttons or the left and right arrow keys. (note: click a blank area on the figure prior to using arrow keys if nothing happens)
+12. Click around! Additional specific information about interactive elements can be accessed by clicking on the blue, circle-i information symbols scattered throughout.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
