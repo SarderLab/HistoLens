@@ -432,14 +432,14 @@ if any(ismember(feat_idxes,(330:334)))
     % General Features = [Area (um^2), Convex Area (um^2), Perimeter (um),
     % Solidity, Eccentricity]
     mask_feats = regionprops(boundary_mask,'Area','ConvexArea','Perimeter','Solidity','Eccentricity');
-    mask_feats = struct2cell(mask_feats);
-    mask_feats = cell2mat(mask_feats');
+    %mask_feats = struct2cell(mask_feats);
+    %mask_feats = cell2mat(mask_feats');
 
-    area = mask_feats(1)*(mpp^2);
-    convex_area = mask_feats(2)*(mpp^2);
-    perimeter = mask_feats(3)*(mpp);
-    solidity = mask_feats(4);
-    eccentricity = mask_feats(5);
+    area = mask_feats.Area*(mpp^2);
+    convex_area = mask_feats.ConvexArea*(mpp^2);
+    perimeter = mask_feats.Perimeter*(mpp);
+    solidity = mask_feats.Solidity;
+    eccentricity = mask_feats.Eccentricity;
 
     %feat_subgroup = zeros(1,5);
     feat_subgroup = [area,convex_area,perimeter,solidity,eccentricity];
