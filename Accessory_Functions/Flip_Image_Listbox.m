@@ -34,10 +34,8 @@ else
     cla(app.Blue_Img_Ax)
     cla(app.Img_Ax)
     
-    if ~isempty(app.Full_Feature_set)
-        app.Compare_Butt.Enable = 'off';
-        app.Select_New_Butt.Enable = 'on';
-    end
+    app.Compare_Butt.Enable = 'off';
+    app.Select_New_Butt.Enable = 'on';
     
     app.Image_Name_Label.Enable = 'on';
     app.Image_Name_Label.Visible = 'on';

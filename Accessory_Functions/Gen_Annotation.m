@@ -10,9 +10,9 @@ ann_colors = {'blue','red','green','yellow','cyan','pink', 'blueviolet','brown',
 if strcmp(current_tab.Title,'Red Comp Image')
     
     if ~app.Comparing
-        img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Image_Name_Label.Items,app.Image_Name_Label.Value))};
+        img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Image_Name_Label.Items,app.Image_Name_Label.Value))};
     else
-        img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Red_Comp_Image.Items,app.Red_Comp_Image.Value))};
+        img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Red_Comp_Image.Items,app.Red_Comp_Image.Value))};
     end
     ann_dir = [app.Slide_Path,filesep,img_name,filesep,'Annotated_Images',filesep];
     img_filename = [ann_dir,img_name,'_ann.png'];
@@ -34,7 +34,7 @@ if strcmp(current_tab.Title,'Red Comp Image')
     app.ResetAnnotationButton.Enable = 'on';
     
 else
-    img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Blue_Comp_Image.Items,app.Blue_Comp_Image.Value))};
+    img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Blue_Comp_Image.Items,app.Blue_Comp_Image.Value))};
     
     ann_dir = [app.Slide_Path,filesep,img_name,filesep,'Annotated_Images',filesep];
     img_filename = [ann_dir,img_name,'_ann.png'];
@@ -60,9 +60,9 @@ end
 % Saving annotations to directory
 if any(app.Red_Mask,'all')
     if ~app.Comparing
-        img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Image_Name_Label.Items,app.Image_Name_Label.Value))};
+        img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Image_Name_Label.Items,app.Image_Name_Label.Value))};
     else
-        img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Red_Comp_Image.Items,app.Red_Comp_Image.Value))};
+        img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Red_Comp_Image.Items,app.Red_Comp_Image.Value))};
     end
     
     % Checking if annotation directory exists 
@@ -81,7 +81,7 @@ if any(app.Red_Mask,'all')
 end
 
 if any(app.Blue_Mask,'all')
-    img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Blue_Comp_Image.Items,app.Blue_Comp_Image.Value))};
+    img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Blue_Comp_Image.Items,app.Blue_Comp_Image.Value))};
     
     % Checking if annotation directory exists 
     ann_dir = [app.Slide_Path,filesep,img_name,filesep,'Annotated_Images',filesep,...
