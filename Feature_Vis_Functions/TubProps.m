@@ -53,7 +53,8 @@ if ismember(idx,[91,93,94])
 
     f = figure('visible','off');
     hold on
-    imshow(ellipse_img)
+    ax = uiaxes('Parent',f);
+    imshow(ellipse_img,'Parent',ax)
     plot(x,y,'w')
     hold off
 
@@ -93,6 +94,7 @@ if ismember(idx,[91,93,94])
     ecc_vis = rescale(circ_dist);
 
     feat_vis = ecc_vis;
+    close(f)
 end
 
 if idx == 95

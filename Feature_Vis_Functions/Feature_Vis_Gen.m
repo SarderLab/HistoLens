@@ -1,8 +1,9 @@
 % --- Function to generate feature visualizations, generalizable to the
 % inclusion of multiple different structures
+%function all_feature_vis = Feature_Vis_Gen(app,event)
 function Feature_Vis_Gen(app,event)
 
-    min_object_size = 25;
+    min_object_size = 15;
     nucpixradius = 2;
     w_in_range = app.w_in_range;
     texture_window = app.texture_window;
@@ -10,16 +11,24 @@ function Feature_Vis_Gen(app,event)
     vis_params = [min_object_size,nucpixradius,w_in_range,texture_window];
     if ~app.Comparing
 
+        app.Comp_Img = [];
+        
         image_name = app.Image_Name_Label.Value;
         image_name = strsplit(image_name,',');
         image_name = image_name{1};
         [raw_I,norm_I,mask,composite] = Extract_Spec_Img(app,event,image_name);
 
-        app.Comp_Img = composite;
+        app.Comp_Img{1} = composite;
 
         all_feature_vis = cell(length(app.map_idx),1);
         all_feature_vis = Get_Feat_Vis(norm_I,mask,composite,app.map_idx,all_feature_vis,vis_params);
         app.sep_feat_map = all_feature_vis;
+
+        if strcmp(inputname(1),'dummy_app')
+            assignin('base','all_feature_vis',all_feature_vis)
+            save(strcat(app.output_dir,'all_feature_vis.mat'),all_feature_vis)
+        end
+
 
     else
 
@@ -66,6 +75,7 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
     w_in_range = vis_params(3);
     texture_window = vis_params(4);
     
+    main_fig = gcf;
     % Initializing waitbar
     wb = waitbar(0,'Feature Visualizations completed: 0');
     num_feat = length(features_needed);
@@ -624,7 +634,6 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
         if find(features_needed==334)
             overlap_num = 1;
             feat_count = feat_count+overlap_num;
-
             ecc_vis = TubProps(boundary_mask,91);
 
             all_feature_vis = insert_vis(features_needed,334,ecc_vis,all_feature_vis);
