@@ -22,6 +22,7 @@ lum_mask = bwareaopen(lum_mask,min_object_size);
 lum_mask = imfill(lum_mask,'holes');
 
 boundary_mask = pas_mask|lum_mask|nuc_mask;
+boundary_mask = bwpropfilt(boundary_mask,'Area',1);
 
 % Glomerular distance transform (Distance from center of glomerulus)
 gdist = bwdist(~boundary_mask);
@@ -432,8 +433,7 @@ if any(ismember(feat_idxes,(330:334)))
     % General Features = [Area (um^2), Convex Area (um^2), Perimeter (um),
     % Solidity, Eccentricity]
     mask_feats = regionprops(boundary_mask,'Area','ConvexArea','Perimeter','Solidity','Eccentricity');
-    %mask_feats = struct2cell(mask_feats);
-    %mask_feats = cell2mat(mask_feats');
+    
 
     area = mask_feats.Area*(mpp^2);
     convex_area = mask_feats.ConvexArea*(mpp^2);
@@ -441,7 +441,6 @@ if any(ismember(feat_idxes,(330:334)))
     solidity = mask_feats.Solidity;
     eccentricity = mask_feats.Eccentricity;
 
-    %feat_subgroup = zeros(1,5);
     feat_subgroup = [area,convex_area,perimeter,solidity,eccentricity];
     
     [overlap,int_idx,~] = intersect(feat_idxes,(330:334));
