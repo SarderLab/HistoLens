@@ -15,12 +15,39 @@ else
     slide_directory = uigetdir(pwd,'Select folder containing slides:');
 end
 
+% Loading slide-level stain normalization values
+if ismember('SlideNormalization',fieldnames(exp_struct.(experiment_name)))
+    slide_names = fieldnames(exp_struct.(experiment_name).SlideNormalization);
+    n_slides = length(slide_names);
+
+    for j = 1:n_slides
+        current_slide = slide_names{j};
+
+        means_text = exp_struct.(experiment_name).SlideNormalization.(current_slide).Means.Text;
+        max_text = exp_struct.(experiment_name).SlideNormalization.(current_slide).Maxs.Text;
+
+        means_text = strsplit(means_text,'\n');
+        max_text = strsplit(max_text,'\n');
+        for i = 1:3
+            nums_means = str2double(strsplit(means_text{i},' '));
+            means_nums(i,:) = nums_means(find(~isnan(nums_means)));
+
+            nums_maxs = str2double(strsplit(max_text{i},' '));
+            max_nums(i,:) = nums_maxs(find(~isnan(nums_maxs)));
+        end
+        
+        structure_info.SlideNormalization.(current_slide).SlideName = exp_struct.(experiment_name).SlideNormalization.(current_slide).SlideName.Text;
+        structure_info.SlideNormalization.(current_slide).Means = means_nums;
+        structure_info.SlideNormalization.(current_slide).Maxs = max_nums;
+    end
+end
+
 
 structure_list = fieldnames(exp_struct.(experiment_name).Structure);
 for st = 1:length(structure_list)
     structure_name = structure_list{st};
 
-    % Loading stain normalization
+    % Loading global stain normalization
     if ismember('StainNormalization',fieldnames(exp_struct.(experiment_name).Structure.(structure_name)))
         means_text = exp_struct.(experiment_name).Structure.(structure_name).StainNormalization.Means.Text;
         max_text = exp_struct.(experiment_name).Structure.(structure_name).StainNormalization.Maxs.Text;
@@ -30,10 +57,10 @@ for st = 1:length(structure_list)
     
         for i = 1:3
             nums_means = str2double(strsplit(means_text{i},' '));
-            means_nums(i,:) = nums_means;
+            means_nums(i,:) = nums_means(find(~isnan(nums_means)));
     
             nums_maxs = str2double(strsplit(max_text{i},' '));
-            max_nums(i,:) = nums_maxs;
+            max_nums(i,:) = nums_maxs(find(~isnan(nums_maxs)));
         end
     
         structure_info.(structure_name).StainNormalization.Means = means_nums;
@@ -42,28 +69,37 @@ for st = 1:length(structure_list)
     
     structure_info.(structure_name).AnnotationID = str2double(exp_struct.(experiment_name).Structure.(structure_name).AnnotationID.Text);
     
-    comp_seg = exp_struct.(experiment_name).Structure.(structure_name).CompartmentSegmentation;
-    
-    % Placeholder for custom segmentation procedure or CNN whatever
-    % segmentation
-
-    comp_fields = fieldnames(comp_seg);
-    comp_list = {'PAS','Luminal','Nuclei'};
-    if strcmp(comp_fields{1},'Stain')
-        structure_info.(structure_name).CompSeg.Stain = comp_seg.Stain.Text;
-    end
-    if strcmp(comp_fields{1},'Colorspace')
-        structure_info.(structure_name).CompSeg.Colorspace = comp_seg.Colorspace.Text;
-    end
-    for c = comp_list
-        comp = c{1};
+    slide_names = fieldnames(exp_struct.(experiment_name).Structure.(structure_name));
+    for slide = 1:length(slide_names)
+        current_slide = slide_names{slide};
+        if contains(current_slide,'Slide_Idx')
+            comp_seg = exp_struct.(experiment_name).Structure.(structure_name).(current_slide).CompartmentSegmentation;
         
-        structure_info.(structure_name).CompSeg.(comp).Channel = str2double(comp_seg.(comp).Channel.Text);
-        structure_info.(structure_name).CompSeg.(comp).Threshold = str2double(comp_seg.(comp).Threshold.Text);
-        structure_info.(structure_name).CompSeg.(comp).MinSize = str2double(comp_seg.(comp).MinSize.Text);
-        structure_info.(structure_name).CompSeg.(comp).Order = str2double(comp_seg.(comp).Order.Text);
+            comp_fields = fieldnames(comp_seg);
+            comp_list = {'PAS','Luminal','Nuclei'};
+            if any(ismember(comp_fields,{'Stain','Colorspace'}))
+                if strcmp(comp_fields{1},'Stain')
+                    structure_info.(structure_name).(current_slide).CompSeg.Stain = comp_seg.Stain.Text;
+                end
+                if strcmp(comp_fields{1},'Colorspace')
+                    structure_info.(structure_name).(current_slide).CompSeg.Colorspace = comp_seg.Colorspace.Text;
+                end
+                for c = comp_list
+                    comp = c{1};
+                    
+                    structure_info.(structure_name).(current_slide).CompSeg.(comp).Channel = str2double(comp_seg.(comp).Channel.Text);
+                    structure_info.(structure_name).(current_slide).CompSeg.(comp).Threshold = str2double(comp_seg.(comp).Threshold.Text);
+                    structure_info.(structure_name).(current_slide).CompSeg.(comp).MinSize = str2double(comp_seg.(comp).MinSize.Text);
+                    structure_info.(structure_name).(current_slide).CompSeg.(comp).Order = str2double(comp_seg.(comp).Order.Text);
+                    structure_info.(structure_name).(current_slide).CompSeg.(comp).Splitting = str2double(comp_seg.(comp).Splitting.Text);
+                    
+                end
+            else
+                % For custom path inputting
+                structure_info.(structure_name).(current_slide).CompSeg.Path = comp_seg.Path.Text;
+            end
+        end
     end
-
     if any(ismember(fieldnames(exp_struct.(experiment_name).Structure.(structure_name)),'FeatureSet'))
 
         structure_info.(structure_name).FeatureSet = exp_struct.(experiment_name).Structure.(structure_name).FeatureSet.Text;
@@ -85,10 +121,9 @@ for st = 1:length(structure_list)
         for name = 1:length(rank_categories)
             current_feature = rank_categories{name};
             rank_path = exp_struct.(experiment_name).Structure.(structure_name).FeatureRanks.(current_feature).Text;
-            app.Feat_Rank.(current_feature) = readtable(rank_path,'Delimiter',',','ReadVariableNames',true,'VariableNamingRule','preserve');
+        
+            structure_info.(structure_name).FeatureRanks.(current_feature) = readtable(rank_path,'Delimiter',',','ReadVariableNames',true,'VariableNamingRule','preserve');
         end
-
-        structure_info.(structure_name).FeatureRanks = exp_struct.(experiment_name).Structure.(structure_name).FeatureRanks;
     else
         structure_info.(structure_name).FeatureRanks = 'None';
     end

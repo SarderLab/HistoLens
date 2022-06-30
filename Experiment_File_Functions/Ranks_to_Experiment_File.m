@@ -20,9 +20,9 @@ if ~isempty(main_app.Experiment_File)
         structure_name = structure_names{j};
 
         % Feature ranks files to include
-        rank_cats = fieldnames(app.Feat_Rank);
+        rank_cats = fieldnames(app.Feat_Rank.(structure_name));
         for i = 1:length(rank_cats)
-            save_file = strcat(app.Feat_Rank_File,filesep,rank_cats{i},'.csv');
+            save_file = strcat(app.Feat_Rank_File.(structure_name),filesep,rank_cats{i},'.csv');
         
             % Currently only for glomeruli
             exp_struct.(experiment_name).Structure.(structure_name).FeatureRanks.(rank_cats{i}) = save_file;
@@ -32,11 +32,6 @@ if ~isempty(main_app.Experiment_File)
     end
     
 end
-
-
-
-
-
 
 
 
