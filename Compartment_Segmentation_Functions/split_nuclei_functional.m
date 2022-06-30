@@ -1,4 +1,4 @@
-function final_nuclei=split_nuclei_functional(nucleus_mask)
+function final_nuclei=split_nuclei_functional(nucleus_mask,peak_est_thr)
 
 %Parameters
 % For removing small objects which are not full nuclear objects
@@ -6,7 +6,8 @@ min_size=25;
 
 % Percentage of maximum distance transform values to be used as H-maxima
 % when computing the extended-maxima transform
-peak_est_thr=0.05;
+%peak_est_thr=0.05;
+peak_est_thr = peak_est_thr/100;
 
 % Amount to smooth distance transform peaks to better estimate clumps
 gauss_sig=1;

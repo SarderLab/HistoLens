@@ -9,11 +9,8 @@ end
 if ismember('Stain',fieldnames(Seg_Params))
     method_idx = 2;
 end
-if ismember('Model_File',fieldnames(Seg_Params))
+if ismember('Path',fieldnames(Seg_Params))
     method_idx = 3;
-end
-if ismember('Custom_Path',fieldnames(Seg_Params))
-    method_idx = 4;
 end
 
 
@@ -83,7 +80,7 @@ if method_idx==1
             comp_mask = imfill(comp_mask,'holes');
             %comp_mask = bwpropfilt(comp_mask,'Eccentricity',[-0.10,0.85]);
 
-            comp_mask = split_nuclei_functional(comp_mask);
+            comp_mask = split_nuclei_functional(comp_mask,params.Splitting);
         end
         
         combined_comps(:,:,comp) = uint8(comp_mask);
@@ -102,6 +99,7 @@ if method_idx == 2
     color_img = img;
     
     [stain1, stain2, stain3] = colour_deconvolution(color_img,Seg_Params.Stain);
+
     stain_img = cat(3,imcomplement(stain1),imcomplement(stain2),imcomplement(stain3));
         
     % Get order of segmentation hierarchy
@@ -152,7 +150,7 @@ if method_idx == 2
             comp_mask = imfill(comp_mask,'holes');
             %comp_mask = bwpropfilt(comp_mask,'Eccentricity',[-0.10,0.85]);
 
-            comp_mask = split_nuclei_functional(comp_mask);
+            comp_mask = split_nuclei_functional(comp_mask,params.Splitting);
         end
         
         combined_comps(:,:,comp) = uint8(comp_mask);
@@ -167,32 +165,35 @@ if method_idx == 2
     
 end
 
-
-% Convolutional Neural Network (not yet implemented)
+% Custom segmentations folder
 if method_idx == 3
-    
-    % Segmentation parameters include path to trained model checkpoints
-    
-    
-    
-end
+    % Loading compartment segmentation from folder
+    % Current_Name = slide name
+    img_name = mask;
+    comp_path = strcat(Seg_Params.Path,filesep,img_name);
 
-% Custom segmentation script
-if method_idx == 4
+    try
+        comp_img = imread(strcat(comp_path,'.png'));
+        assignin('base','comp_img',comp_img)
+    catch
+        try
+            comp_img = imread(strcat(comp_path,'.jpg'));
+        catch
+            try
+                comp_img = imread(strcat(comp_path,'.tif'));
+            catch
+                msgbox(strcat(img_name,'_Not found in_',comp_path));
+            end
+        end
+    end
     
-    % Segmentation parameters include path to compartment segmentation
-    % script
-    addpath(fileparts(Seg_Params.CustomPath))
-    
-    % Writing file from which to call segmentation script
-    file = strcat(pwd,filesep,'Run_',structure,'_Comp_Seg.m');
-    fid = fopen(file,'w+');
-    fprintf(fid,'function get_example_comp(app,event)')
-    fprintf(fid,strcat('app.Current_Comp =',structure,'_Comp_Seg(',img,mask,');'));
-    fclose(fid)
-    % Custom segmentation script should have a set name and outputs
-    run(file)
-    
+    % Reading in compartment masks, have to normalize and resize (just for
+    % safety)
+    comp_img = comp_img./255;
+    comp_img = imresize(comp_img,[size(img,1),size(img,2)],'nearest');
+    assignin('base','comp_img',comp_img)
+    assignin('base','img',img)
+
 end
 
 

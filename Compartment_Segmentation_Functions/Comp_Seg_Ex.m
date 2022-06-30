@@ -1,6 +1,6 @@
 % --- Function to carry out compartment segmentation according to user
 % specifications to generate new image
-function Comp_Seg_Ex(app,event)
+function Comp_Seg_Ex(app)
 
 structure = app.SelectStructureDropDown.Value;
 
@@ -75,7 +75,7 @@ if ~isempty(app.Norm_Img)
             if comp==3
                 comp_mask = imfill(comp_mask,'holes');
                 %comp_mask = bwpropfilt(comp_mask,'Eccentricity',[-0.10,0.85]);
-                comp_mask = split_nuclei_functional(comp_mask);
+                comp_mask = split_nuclei_functional(comp_mask,params.Splitting);
             end
             
             combined_comps(:,:,comp) = uint8(comp_mask);
@@ -88,8 +88,8 @@ if ~isempty(app.Norm_Img)
         app.Current_Comp = combined_comps;
         
         if strcmp(app.Knob.Value,'Sub-Compartment Mask')
-            axes (app.CompartmentSegmentationUIFigure.CurrentAxes)
-            imshow(app.Current_Comp,'Parent',app.CompartmentSegmentationUIFigure.CurrentAxes)
+            axes (app.UIAxes_Comp)
+            imshow(app.Current_Comp,'Parent',app.UIAxes_Comp)
     
         end
     end
@@ -97,9 +97,11 @@ if ~isempty(app.Norm_Img)
     % Color Deconvolution
     if butt_idx == 2
         color_img = app.Norm_Img;
-        [stain1, stain2, stain3] = colour_deconvolution(color_img,app.Seg_Params.(structure).Stain);
-        stain_img = cat(3,imcomplement(stain1),imcomplement(stain2),imcomplement(stain3));
         
+        [stain1, stain2, stain3] = colour_deconvolution(color_img,Seg_Params.Stain);
+
+        stain_img = cat(3,imcomplement(stain1),imcomplement(stain2),imcomplement(stain3));
+            
         % Get order of segmentation hierarchy
         order = [app.Seg_Params.(structure).PAS.Order,...
             app.Seg_Params.(structure).Luminal.Order,...
@@ -147,7 +149,7 @@ if ~isempty(app.Norm_Img)
             if comp==3
                 comp_mask = imfill(comp_mask,'holes');
                 %comp_mask = bwpropfilt(comp_mask,'Eccentricity',[-0.10,0.85]);
-                comp_mask = split_nuclei_functional(comp_mask);
+                comp_mask = split_nuclei_functional(comp_mask, params.Splitting);
             end
             
             combined_comps(:,:,comp) = uint8(comp_mask);
@@ -161,51 +163,38 @@ if ~isempty(app.Norm_Img)
         app.Current_Comp = combined_comps;
         
         if strcmp(app.Knob.Value,'Sub-Compartment Mask')
-            axes (app.CompartmentSegmentationUIFigure.CurrentAxes)
-            imshow(app.Current_Comp,'Parent',app.CompartmentSegmentationUIFigure.CurrentAxes)
+            axes (app.UIAxes_Comp)
+            imshow(app.Current_Comp,'Parent',app.UIAxes_Comp)
         end
         
     end
     
-    
-    % Convolutional Neural Network (not yet implemented)
+    % Custom segmentations folder
     if butt_idx == 3
         
-        % Segmentation parameters include path to trained model checkpoints
-        
-        
-        
-    end
-    
-    % Custom segmentation script
-    if butt_idx == 4
-        
-        % Segmentation parameters include path to compartment segmentation
-        % script
-        addpath(fileparts(app.Seg_Params.(structure).CustomPath))
-        
-        % Writing file from which to call segmentation script
-        file = strcat(pwd,filesep,'Run_',structure,'_Comp_Seg.m');
-        fid = fopen(file,'w+');
-        fprintf(fid,'function get_example_comp(app,event)')
-        fprintf(fid,strcat('app.Current_Comp =',structure,'_Comp_Seg(',app.Norm_Img,app.Current_Mask,');'));
-        fclose(fid)
-        % Custom segmentation script should have a set name and outputs
-        run(file)
+        display('Using custom segmentation folder')
+        % Loading compartment segmentation from folder
+        % Current_Name = slide name
+        img_name = strcat(strrep(app.Current_Name,'.svs',''),'_',num2str(app.structure_num.Current));
+        img_name = strcat(img_name,'.png');
+        comp_path = strcat(app.Seg_Params.(app.SelectStructureDropDown.Value).Path,filesep,img_name);
+
+        try
+            app.Current_Comp = imread(comp_path);
+        catch
+            try
+                app.Current_Comp = imread(strrep(comp_path,'.png','.jpg'));
+            catch
+                try
+                    app.Current_Comp = imread(strrep(comp_path,'.png','.tif'));
+                catch
+                    msgbox(strcat(img_name,'_Not found in_',comp_path));
+                end
+            end
+        end
         
     end
     
 end
-
-
-
-
-
-
-
-
-
-
-
 
 
