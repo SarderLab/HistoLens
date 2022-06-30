@@ -12,7 +12,13 @@ for f = 1:length(app.map_idx)
         map_feat = map_feat(1:namelengthmax);
         map_feat_rank = find(strcmp(map_feat, app.weighted_encodings.Feature_Names));
     end
-    
+
+    % Hacky thing that I hate
+    if isempty(map_feat_rank)
+        map_feat = strrep(map_feat,'structure','glomerular');
+        map_feat_rank = find(contains(app.weighted_encodings.Feature_Names,map_feat));
+    end
+
     ranks(f) = map_feat_rank;
 end
 

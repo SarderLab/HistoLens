@@ -6,9 +6,9 @@ axes(app.Rel_Ax);
 app.min_feat_rank = app.Rank_Slide.Value;
 
 if length(app.map_idx)==1
-    plot_idx = find(app.Overlap_Feature_idx==app.map_idx);
+    plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
 else
-    plot_idx = find(ismember(app.Overlap_Feature_idx,app.map_idx));
+    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
 end
 
 if ~app.Comparing || strcmp(app.Image_Name_Label.Visible,'on')
@@ -107,22 +107,14 @@ if ~app.Comparing || strcmp(app.Image_Name_Label.Visible,'on')
         xlabel(app.Rel_Ax,'Feature Intensity'), ylabel(app.Rel_Ax,'Frequency')
 
         % Accounting for the case that the full feature set isn't provided
-        if ~isempty(app.Full_Feature_set)
-            title(app.Rel_Ax,['Histogram of:',app.Full_Feature_set.Properties.VariableNames(plot_idx),'around clicked region'])
-            if ~isempty(app.weighted_encodings)
-                feature = app.Full_Feature_set.Properties.VariableNames{plot_idx};
-                rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
-                subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
-            end
-        else
-            title(app.Rel_Ax,'Histogram of Values in ROI')
-            if ~isempty(app.weighted_encodings)
-                feature = app.Full_Feature_set.Properties.VariableNames{plot_idx};
-                rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
-                subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
-            end
-            
+        %if ~isempty(app.Full_Feature_set)
+        title(app.Rel_Ax,['Histogram of:',app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx),'around clicked region'])
+        if ~isempty(app.weighted_encodings)
+            feature = app.Full_Feature_set.(app.Structure).Properties.VariableNames{plot_idx};
+            rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
+            subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
         end
+        %end
         
         try
             table_info(:,1) = cellfun(@str2num,sel_edges);
@@ -308,23 +300,15 @@ else
         xlabel(app.Rel_Ax,'Feature Intensity'), ylabel(app.Rel_Ax,'Frequency')
 
         % Accounting for the case that the full feature set isn't provided
-        if ~isempty(app.Full_Feature_set)
-            title(app.Rel_Ax,strcat('Histogram of ', app.Full_Feature_set.Properties.VariableNames(plot_idx),' around clicked region'))
-            
-            if ~isempty(app.weighted_encodings)
-                feature = app.Full_Feature_set.Properties.VariableNames{plot_idx};
-                rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
-                subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
-            end
-            
-        else
-            title(app.Rel_Ax,'Histogram of Values in ROI')
-            if ~isempty(app.weighted_encodings)
-                feature = app.Full_Feature_set.Properties.VariableNames{plot_idx};
-                rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
-                subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
-            end
+        %if ~isempty(app.Full_Feature_set)
+        title(app.Rel_Ax,strcat('Histogram of ', app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx),' around clicked region'))
+        
+        if ~isempty(app.weighted_encodings)
+            feature = app.Full_Feature_set.(app.Structure).Properties.VariableNames{plot_idx};
+            rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
+            subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
         end
+        %end
         
         table_info(:,1) = rescale(combined_edges);
         table_info(:,2) = red_comb_edge;

@@ -1,12 +1,18 @@
 % --- Function to generate feature visualizations according to user
 % selections
-%function Gen_Map(hObject, eventdata, handles)
 function Gen_Map(app,event)
 
-Get_Feat(app,event)
+if ~strcmp(inputname(1),'dummy_app')
+    Get_Feat(app,event)
+end
 
 % Using the appropriate feature visualization code.
 Feature_Vis_Gen(app,event)
+
+if strcmp(inputname(1),'dummy_app')
+    app.sep_feat_map = load('all_feature_vis.mat');
+end
+
 
 % Controlling for single feature values where you can't scroll through
 % ranks.
@@ -146,5 +152,12 @@ else
         app.map = both_maps;
     end
 end
+
+if strcmp(inputname(1),'dummy_app')
+    figure, imshow(app.Comp_Img{1})
+end
+
+
+
 
 

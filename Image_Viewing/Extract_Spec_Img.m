@@ -2,7 +2,7 @@
 function [raw_I,norm_I,mask,composite] = Extract_Spec_Img(app,event,img_name)
 
 % Getting the slide name and img id from feature set row
-img_name = app.Full_Feature_set.ImgLabel{find(strcmp(app.Full_Feature_set.ImgLabel,img_name))};
+%img_name = app.Full_Feature_set.(app.Structure).ImgLabel{find(strcmp(app.Full_Feature_set.(app.Structure).ImgLabel,img_name))};
 name_parts = strsplit(img_name,'_');
 if length(name_parts)==2
     slide_name = name_parts{1};
@@ -13,6 +13,7 @@ else
         slide_name = strjoin(name_parts{1:end-1},'_');
     end
 end
+
 
 img_id = name_parts{end};
 img_id = strsplit(img_id,'.');
@@ -33,6 +34,7 @@ end
 % Finding slide that contains that slide name (should grab it even without
 % specifying the file type
 slide_idx = find(contains(dir_contents,slide_name));
+slide_idx_name = strcat('Slide_Idx_',num2str(slide_idx));
 if ~isempty(slide_idx)
     slide_path = strcat(app.Slide_Path,filesep,dir_contents{slide_idx});
     xml_path = strsplit(slide_path,'.');
@@ -49,7 +51,7 @@ if ~isempty(slide_idx)
     end
     
     % Make sure structure index is a property
-    structure_regions = annotations.item(app.structure_idx-1);
+    structure_regions = annotations.item(app.structure_idx.(app.Structure)-1);
     regions = structure_regions.getElementsByTagName('Region');
     
     % Pulling out specific region
@@ -77,8 +79,21 @@ if ~isempty(slide_idx)
     else
         norm_I = raw_I;
     end
+    
+    current_seg_params = app.Seg_Params.(app.Structure).(slide_idx_name).CompartmentSegmentation;
+    if ~ismember('Path',fieldnames(current_seg_params))
 
-    composite = Comp_Seg_Gen(app.Seg_Params.(app.Structure),norm_I,mask);
+        composite = Comp_Seg_Gen(app.Seg_Params.(app.Structure).(slide_idx_name).CompartmentSegmentation,norm_I,mask);
+    else
+        % Special case hack I hate this
+        raw_I = imresize(raw_I,4);
+        norm_I = imresize(norm_I,4);
+        mask = imresize(mask,4);
+        
+
+        img_name = strcat(slide_name,'_',num2str(img_id));
+        composite = Comp_Seg_Gen(current_seg_params,norm_I,img_name);
+    end
 else
 
     f = msgbox({'Could not find',slide_name,' in ',app.Slide_Path});

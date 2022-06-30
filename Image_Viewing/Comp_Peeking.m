@@ -73,7 +73,7 @@ if iscell(map)
 else
     img_it = img;
     map_it = {map};
-    comp_it = {compartment};
+    comp_it = compartment;
     color_it = {color};
     axis_it = {img_ax};
 end
@@ -186,7 +186,7 @@ for i = 1:length(axis_it)
             end         
 
         else
-            if ~strcmp(color{i},'')
+            if ~strcmp(color_it{i},'')
                 prev_data = app.Rel_Feat_Table.Data;
                 prev_columns = app.Rel_Feat_Table.ColumnName;
 

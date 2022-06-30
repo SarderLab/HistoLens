@@ -215,9 +215,18 @@ else
         %n_classes = length(unique(dist_data.Class));
         include_classes = unique(dist_data.Class);
         if round(class_max)<=length(include_classes)
-            include_classes = include_classes(round(class_min):round(class_max));
+            if round(class_min)==0
+                include_classes = include_classes(ceil(class_min):round(class_max));
+            else
+                include_classes = include_classes(round(class_min):round(class_max));
+            end
         else
-            include_classes = include_classes(round(class_min):length(include_classes));
+            if round(class_min)==0
+                include_classes = include_classes(ceil(class_min):length(include_classes));
+            else
+                include_classes = include_classes(round(class_min):length(include_classes));
+            end
+            
         end
         
         app.dist_roi.Label = ['Min: ',num2str(data_min,'%0.4f'),' to Max: ',num2str(data_max,'%0.4f')];

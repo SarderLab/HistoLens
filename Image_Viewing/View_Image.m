@@ -5,6 +5,8 @@ function View_Image(app,event)
 %hold off
 
 if ~app.Comparing
+    app.Current_Img = [];
+    app.Current_NormImg = [];
     
     % Reading in image
     image_name = app.Image_Name_Label.Value;
@@ -12,6 +14,7 @@ if ~app.Comparing
     image_name = image_name{1};
     
     [raw_img,norm_img,~,~] = Extract_Spec_Img(app,event,image_name);
+    
     axes(app.Img_Ax);
 
     scaled_norm_img = Add_Scalebar(norm_img,app.Img_Ax,app.MPP);
@@ -53,35 +56,33 @@ if ~app.Comparing
             app.Rel_Feat_Table.Data = {};
         end
         
-        if ~isempty(app.Full_Feature_set)
-            % Annotating image position in feature space for PCA plots and
-            % scatter plots
-            if length(app.map_idx)>1
-                try
-                    delete(app.img_text)
-                end
-                
-                coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
-                app.img_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
-                    '\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-            else
-                try
-                    delete(app.img_text)
-                end
-                
-                label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
-                class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
-                all_class = unique(app.Dist_Data.Class);
-                if isnumeric(all_class)
-                    app.img_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
-                        label_vals(1,1),'\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                else
-                    app.img_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
-                        label_vals(1,1),'\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                end
+        % Annotating image position in feature space for PCA plots and
+        % scatter plots
+        if length(app.map_idx)>1
+            try
+                delete(app.img_text)
             end
             
+            coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
+            app.img_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
+                '\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+        else
+            try
+                delete(app.img_text)
+            end
+            
+            label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
+            class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
+            all_class = unique(app.Dist_Data.Class);
+            if isnumeric(all_class)
+                app.img_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
+                    label_vals(1,1),'\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+            else
+                app.img_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
+                    label_vals(1,1),'\leftarrow Current Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+            end
         end
+            
     end
         
 else
@@ -152,42 +153,42 @@ else
                     
             end
             
-            if ~isempty(app.Full_Feature_set)
-                % Annotating image position in feature space for PCA plots
-                if length(app.map_idx)>1
-                    try
-                        delete(app.red_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
-
-                    coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
-                    app.red_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
-                        '\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                
-                else
-                    try
-                        delete(app.red_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
-
-                    label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
-                    class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
-                    all_class = unique(app.Dist_Data.Class);
-
-                    if isnumeric(all_class)
-                        app.red_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
-                            label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    else
-                        app.red_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
-                            label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    end
-                
+            %if ~isempty(app.Full_Feature_set)
+            % Annotating image position in feature space for PCA plots
+            if length(app.map_idx)>1
+                try
+                    delete(app.red_text)
                 end
+                try
+                    delete(app.img_text)
+                end
+
+                coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
+                app.red_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
+                    '\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+            
+            else
+                try
+                    delete(app.red_text)
+                end
+                try
+                    delete(app.img_text)
+                end
+
+                label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
+                class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
+                all_class = unique(app.Dist_Data.Class);
+
+                if isnumeric(all_class)
+                    app.red_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
+                        label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+                else
+                    app.red_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
+                        label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+                end
+            
             end
+            %end
             
         end
     end
@@ -250,40 +251,40 @@ else
                 app.Rel_Feat_Table.Data = new_data;
             end
             
-            if ~isempty(app.Full_Feature_set)
-                % Annotating image position in feature space for PCA plots
-                if length(app.map_idx)>1
-                    try
-                        delete(app.blue_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
+            %if ~isempty(app.Full_Feature_set)
+            % Annotating image position in feature space for PCA plots
+            if length(app.map_idx)>1
+                try
+                    delete(app.blue_text)
+                end
+                try
+                    delete(app.img_text)
+                end
 
-                    coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
-                    app.blue_text = text(app.Dist_Ax,coords{1,1},coords{1,2},'\leftarrow Blue Image',...
-                        'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+                coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,image_name)),1:2);
+                app.blue_text = text(app.Dist_Ax,coords{1,1},coords{1,2},'\leftarrow Blue Image',...
+                    'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+            else
+                try
+                    delete(app.blue_text)
+                end
+                try
+                    delete(app.img_text)
+                end
+
+                label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
+                class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
+                all_class = unique(app.Dist_Data.Class);
+                
+                if isnumeric(all_class)
+                    app.blue_text = text(app.Dist_Ax, find(class_vals(1,1)==all_class),...
+                        label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 else
-                    try
-                        delete(app.blue_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
-
-                    label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),1};
-                    class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,image_name)),3};
-                    all_class = unique(app.Dist_Data.Class);
-                    
-                    if isnumeric(all_class)
-                        app.blue_text = text(app.Dist_Ax, find(class_vals(1,1)==all_class),...
-                            label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    else
-                        app.blue_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
-                            label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    end
+                    app.blue_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
+                        label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 end
             end
+            %end
             
         end
     end
@@ -413,58 +414,63 @@ else
                 end
             end
                
-            if ~isempty(app.Full_Feature_set)
-                % Annotating image position in feature space for PCA plots
-                if length(app.map_idx)>1
-                    try
-                        delete(app.red_text)
-                    end
-                    try
-                        delete(app.blue_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
+            %if ~isempty(app.Full_Feature_set)
+            % Annotating image position in feature space for PCA plots
+            if length(app.map_idx)>1
+                try
+                    delete(app.red_text)
+                end
+                try
+                    delete(app.blue_text)
+                end
+                try
+                    delete(app.img_text)
+                end
 
-                    coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),1:2);
-                    app.red_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
-                        '\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+                coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),1:2);
+                app.red_text = text(app.Dist_Ax,coords{1,1},coords{1,2},...
+                    '\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
 
-                    coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),1:2);
-                    app.blue_text = text(app.Dist_Ax,coords{1,1},coords{1,2},'\leftarrow Blue Image',...
-                        'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-               
+                coords = app.Dist_Data(find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),1:2);
+                app.blue_text = text(app.Dist_Ax,coords{1,1},coords{1,2},'\leftarrow Blue Image',...
+                    'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+           
+            else
+                try
+                    delete(app.red_text)
+                end
+                try
+                    delete(app.blue_text)
+                end
+                try
+                    delete(app.img_text)
+                end
+
+                label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),1};
+                class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),3};
+                all_class = unique(app.Dist_Data.Class);
+
+                if isnumeric(all_class)
+                    app.red_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
+                        label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 else
-                    try
-                        delete(app.red_text)
-                    end
-                    try
-                        delete(app.blue_text)
-                    end
-                    try
-                        delete(app.img_text)
-                    end
-
-                    label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),1};
-                    class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,red_image_name)),3};
-                    all_class = unique(app.Dist_Data.Class);
-
                     app.red_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
                         label_vals(1,1),'\leftarrow Red Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app)); 
-                    
-                    label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),1};
-                    class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),3};
-                    all_class = unique(app.Dist_Data.Class);
-                    
-                    if isnumeric(all_class)
-                        app.blue_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
-                            label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    else
-                        app.blue_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
-                            label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
-                    end
+                end
+                
+                label_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),1};
+                class_vals = app.Dist_Data{find(strcmp(app.Dist_Data.ImgLabel,blue_image_name)),3};
+                all_class = unique(app.Dist_Data.Class);
+                
+                if isnumeric(all_class)
+                    app.blue_text = text(app.Dist_Ax,find(class_vals(1,1)==all_class),...
+                        label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
+                else
+                    app.blue_text = text(app.Dist_Ax,find(strcmp(class_vals(1,1),all_class)),...
+                        label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 end
             end
+            %end
         end
     end
 end
