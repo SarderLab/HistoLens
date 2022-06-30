@@ -19,16 +19,14 @@ app.SimilarityThresholdSpinner.Enable = 'on';
 app.TextureWindowSizeEditField.Enable = 'on';
 
 % Keep not-enabled until working
-if ~isempty(app.Full_Feature_set)
-    app.AddLabelButton.Enable = 'on';
-    app.Select_New_Butt.Enable = 'on';
-    app.SelectSinglePointButton.Enable = 'on';
-    app.ExamplesEditField.Enable = 'on';
-    app.SelectPointsAlongLineButton.Enable = 'on';
-    app.DownloadDistributionDataButton.Enable = 'on';
-    app.RemoveOutliersCheckBox.Enable = 'on';
+app.AddLabelButton.Enable = 'on';
+app.Select_New_Butt.Enable = 'on';
+app.SelectSinglePointButton.Enable = 'on';
+app.ExamplesEditField.Enable = 'on';
+app.SelectPointsAlongLineButton.Enable = 'on';
+app.DownloadDistributionDataButton.Enable = 'on';
+app.RemoveOutliersCheckBox.Enable = 'on';
 
-end
 
 app.AddLabelButton.Enable = 'on';
 app.RemoveLabelButton.Enable = 'on';
@@ -55,3 +53,13 @@ end
 % Add Labels tab
 app.AddSlideLabelfromFileButton.Enable = 'on';
 app.AddStructureLabelfromFileButton.Enable = 'on';
+
+% Enabling Normalization Labels tab
+app.MetadataLabelDropDown.Enable = 'on';
+app.SubClassDropDown.Enable = 'on';
+app.ViewNormalizedButton.Enable = 'on';
+
+% Enabling compartment segmentation check button
+app.GenerateCompartmentSegmentationCheckButton.Enable = 'on';
+
+

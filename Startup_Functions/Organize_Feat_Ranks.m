@@ -2,9 +2,11 @@
 % listbox
 function weighted_encodings = Organize_Feat_Ranks(app,event)
 
+selected_structure = app.Structure;
+
 if ~strcmp(app.FeatureRankingsUsedDropDown.Value,'None')
     
-    current_file = app.Feat_Rank.(strrep(app.FeatureRankingsUsedDropDown.Value,' ',''));
+    current_file = app.Feat_Rank.(selected_structure).(strrep(app.FeatureRankingsUsedDropDown.Value,' ',''));
 
     total_rank = cell2table([current_file.Properties.VariableNames',...
         table2cell(current_file(1,:))'],'VariableNames',{'Feature_Names','Total'});
@@ -12,7 +14,7 @@ if ~strcmp(app.FeatureRankingsUsedDropDown.Value,'None')
     % Compartment Column
     comp_cell = cell(height(total_rank),1);
     comp_cell(:) = {'Weighted Visualization'};
-    aligned = app.feature_encodings(app.Overlap_Feature_idx,:);
+    aligned = app.feature_encodings(app.Overlap_Feature_idx.(selected_structure),:);
     aligned.Total = total_rank.Total;
     aligned = sortrows(aligned,'Total','descend');
 
@@ -25,7 +27,5 @@ else
     app.Rank_Slide.Enable = 'off';
     app.Rank_Slide.MajorTicks = [];
 end
-
-
 
 

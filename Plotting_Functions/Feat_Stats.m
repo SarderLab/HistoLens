@@ -90,7 +90,7 @@ if length(unique(app.Dist_Data.Class))>1
             % Breaking up classes into quantile ranges
             if isnumeric(app.Dist_Data.Class)
                 number_range = true;
-                sub_classes = app.Aligned_Labels.(current_feature).Sub_Class;
+                sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
             else
                 number_range = false;
                 sub_classes = unique(app.Dist_Data.Class);
@@ -179,7 +179,7 @@ if length(unique(app.Dist_Data.Class))>1
         % Breaking up classes into quantile ranges
         if isnumeric(classes)
             number_range = true;
-            sub_classes = app.Aligned_Labels.(current_feature).Sub_Class;
+            sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
         else
             number_range = false;
             sub_classes = classes;
@@ -251,8 +251,8 @@ if length(unique(app.Dist_Data.Class))>1
             coeffs = app.PCA_Vals{2};
             coeffs = coeffs(:,1:2);
             
-            sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx,:);
-            plot_idx = find(ismember(app.Overlap_Feature_idx,app.map_idx));
+            sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx.(app.Structure),:);
+            plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
             all_feature_names = sub_feature_encodings.Feature_Names(plot_idx);
             
             app.CurrentFeaturesListBox.Items = all_feature_names;

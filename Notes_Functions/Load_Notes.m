@@ -2,7 +2,6 @@
 %function Load_Notes(hObject, eventdata, handles)
 function Load_Notes(app, event)
 
-%assignin('base','handles',handles)
 if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
     
     if strcmp(app.Img_one_txt.Visible,'off')
@@ -23,7 +22,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
     selected1 = strsplit(selected1,',');
     selected1 = selected1{1};
     
-    notes_contents = app.Notes.Notes(strcmp(app.Notes.ImgLabel,selected1),:);
+    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected1),:);
     notes_contents = notes_contents{1};
     
     app.Img_one_txt.Text = selected1;
@@ -38,7 +37,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
     selected2 = strsplit(selected2,',');
     selected2 = selected2{1};
     
-    notes_contents = app.Notes.Notes(strcmp(app.Notes.ImgLabel,selected2),:);
+    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected2),:);
     notes_contents = notes_contents{1};
     
     app.Img_two_txt.Text = selected2;
@@ -70,7 +69,7 @@ else
     selected = strsplit(selected,',');
     selected = selected{1};
     
-    notes_contents = app.Notes.Notes(strcmp(app.Notes.ImgLabel,selected),:);
+    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected),:);
     notes_contents = notes_contents{1};
 
     if ~isempty(notes_contents)

@@ -26,7 +26,7 @@ end
 
 if any([app.Spec_View,app.Feat_View,app.Comp_View,app.Custom_View])
 
-    sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx,:);
+    sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx.(app.Structure),:);
     
     % For viewing a specific feature there will only be one feature
     if app.Spec_View
@@ -44,8 +44,8 @@ if any([app.Spec_View,app.Feat_View,app.Comp_View,app.Custom_View])
                 strcmp(sub_feature_encodings.Specific,sel_spec));
         end
         
-        app.map_idx = app.Overlap_Feature_idx(find(row_idx));
-        app.og_map_idx = app.Overlap_Feature_idx(find(row_idx));
+        app.map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
+        app.og_map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
         
     end
     if app.Feat_View
@@ -63,8 +63,8 @@ if any([app.Spec_View,app.Feat_View,app.Comp_View,app.Custom_View])
             app.Rank_Slide.Enable = 'on';
         end
         
-        app.map_idx = app.Overlap_Feature_idx(find(row_idx));
-        app.og_map_idx = app.Overlap_Feature_idx(find(row_idx));
+        app.map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
+        app.og_map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
 
     end
     if app.Comp_View
@@ -80,8 +80,8 @@ if any([app.Spec_View,app.Feat_View,app.Comp_View,app.Custom_View])
             app.Rank_Slide.Enable = 'on';
         end
         
-        app.map_idx = app.Overlap_Feature_idx(find(row_idx));
-        app.og_map_idx = app.Overlap_Feature_idx(find(row_idx));
+        app.map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
+        app.og_map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
 
     end
     
@@ -105,7 +105,7 @@ if any([app.Spec_View,app.Feat_View,app.Comp_View,app.Custom_View])
     
 else
     
-    sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx,:);
+    sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx.(app.Structure),:);
 
     sel_comp = app.Comp_List.Value;
     sel_feat = app.Feat_List.Value;
@@ -120,8 +120,8 @@ else
             strcmp(sub_feature_encodings.Specific,sel_spec));
     end
     
-    app.map_idx = app.Overlap_Feature_idx(find(row_idx));
-    app.og_map_idx = app.Overlap_Feature_idx(find(row_idx));
+    app.map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
+    app.og_map_idx = app.Overlap_Feature_idx.(app.Structure)(find(row_idx));
     
     app.UITable2.Data = [sub_feature_encodings.Feature_Names(row_idx),...
         sub_feature_encodings.Definition(row_idx)];
