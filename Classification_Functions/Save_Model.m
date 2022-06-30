@@ -40,10 +40,3 @@ writetable(app.Performance_Report.Test_Samples,strcat(model_filename,model_type,
 writematrix(app.Performance_Report.ClassLabel,strcat(model_filename,model_type,'_Info.xlsx'),'Sheet','Class Label')
 writecell(app.Performance_Report.FeaturesUsed,strcat(model_filename,model_type,'_Info.xlsx'),'Sheet','Features Used')
 
-
-
-
-
-
-
-

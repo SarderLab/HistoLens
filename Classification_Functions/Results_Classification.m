@@ -119,7 +119,6 @@ end
 
 if ~isnumeric(test_data.Class)
     unique_slides = unique(current_slides);
-    %all_slide_preds = cell(length(unique_slides)+1,length(unique(test_data.Class))+1);
 
     all_slide_preds(1,:) = [{'Slide Name'},unique(test_data.Class)',{'Ground Truth'}];
     for j = 1:length(unique_slides)
@@ -154,7 +153,6 @@ else
     % and actuals
     % Recording min, mean, standard deviation, median, max
     unique_slides = unique(current_slides);
-    %all_slide_preds = cell(length(unique_slides)+1,7);
     all_slide_preds(1,:) = [{'Slide Name'},{'Min'},{'Mean'},{'Std Dev'},{'Med'},{'Max'},{'Ground Truth'}];
     for j = 1:length(unique_slides)
 

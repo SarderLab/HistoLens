@@ -30,9 +30,8 @@ if ishandle(app.Performance_Axes)
     cla(app.Performance_Axes)
 end
 
-
 % Check data type of classes (0 for non-numeric, 1 for numeric)
-label_isnumeric = isnumeric(app.Full_Feature_set.Class);
+label_isnumeric = isnumeric(app.Full_Feature_set.(app.Structure).Class);
 
 % Numeric properties
 if label_isnumeric    
@@ -46,7 +45,6 @@ else
     app.MaxNumberofCategoriesEditField.Enable = 'off';
 
     app.FitNeuralNetworkButton.Enable = 'on';
-
 
 end
 
