@@ -96,9 +96,7 @@ if length(unique(app.Dist_Data.Class))>1
                 sub_classes = unique(app.Dist_Data.Class);
             end      
 
-            % Initializing table
-            %descrip = cell(1);
-            %values = cell(1);    
+            % Initializing table   
             count = 0;
             for i = 1:length(sub_classes)
                 % Summary values of data
@@ -256,7 +254,6 @@ if length(unique(app.Dist_Data.Class))>1
             all_feature_names = sub_feature_encodings.Feature_Names(plot_idx);
             
             app.CurrentFeaturesListBox.Items = all_feature_names;
-            
 
             for co = 1:length(app.map_idx)
                 descrip{count+4+co,1} = all_feature_names{co};

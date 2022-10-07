@@ -29,9 +29,11 @@ if strcmp(label_type,'Numeric')
             {'ImgLabel','Class'})));
         
         app.New_Label = true;
+        app.Combine_Label = true;
         Plot_Feat(app,event)
         View_Image(app,event)
         app.New_Label = false;
+        app.Combine_Label = false;
         
     end
     
@@ -60,9 +62,11 @@ if strcmp(label_type,'Numeric')
         app.Dist_Data.Class = label_sub_in;
         
         app.New_Label = true;
+        app.Combine_Label = true;
         Plot_Feat(app,event)
         View_Image(app,event)
         app.New_Label = false;
+        app.Combine_Label = false;
         
     end
     
@@ -106,9 +110,11 @@ if strcmp(label_type,'Categorical')
             {'ImgLabel','Class'})));
         
         app.New_Label = true;
+        app.Combine_Label = true;
         Plot_Feat(app,event)
         View_Image(app,event)
         app.New_Label = false;
+        app.Combine_Label = false;
     end
     
     % For the "Combine Classes" option
