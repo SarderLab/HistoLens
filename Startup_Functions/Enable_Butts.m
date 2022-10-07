@@ -62,4 +62,5 @@ app.ViewNormalizedButton.Enable = 'on';
 % Enabling compartment segmentation check button
 app.GenerateCompartmentSegmentationCheckButton.Enable = 'on';
 
-
+% Enabling Pause Visualization checkbox
+app.PauseVisualizationCheckBox.Enable = 'on';
