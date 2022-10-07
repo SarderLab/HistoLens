@@ -20,12 +20,15 @@ try
     app.MPP = mpp;
 end
 
-annotations = read_xml.getElementsByTagName('Annotation');
-structure_regions = annotations.item(structure_idx-1);
+try
+    annotations = read_xml.getElementsByTagName('Annotation');
+    structure_regions = annotations.item(structure_idx-1);
+    
+    regions = structure_regions.getElementsByTagName('Region');
+    
+    structure_num = regions.getLength;
 
-regions = structure_regions.getElementsByTagName('Region');
-
-structure_num = regions.getLength;
-
-
+catch
+    structure_num = 0;
+end
 

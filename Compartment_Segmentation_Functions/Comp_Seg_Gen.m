@@ -174,7 +174,6 @@ if method_idx == 3
 
     try
         comp_img = imread(strcat(comp_path,'.png'));
-        assignin('base','comp_img',comp_img)
     catch
         try
             comp_img = imread(strcat(comp_path,'.jpg'));
@@ -191,10 +190,6 @@ if method_idx == 3
     % safety)
     comp_img = comp_img./255;
     comp_img = imresize(comp_img,[size(img,1),size(img,2)],'nearest');
-    assignin('base','comp_img',comp_img)
-    assignin('base','img',img)
 
 end
-
-
 

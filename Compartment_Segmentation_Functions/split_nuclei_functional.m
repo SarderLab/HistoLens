@@ -58,3 +58,7 @@ segmented_nuclei=imopen(segmented_nuclei,strel('disk',1));
 
 %Combine split nuclei and single nuclei
 final_nuclei=segmented_nuclei|single_nucs;
+
+%assignin('base','pre_prop_filt',final_nuclei)
+%figure, imagesc(final_nuclei)
+%final_nuclei = bwpropfilt(final_nuclei,'Eccentricity',[0,0.7]);
