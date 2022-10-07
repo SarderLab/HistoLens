@@ -23,7 +23,7 @@ img_id = str2double(img_id{1});
 dir_contents = dir(app.Slide_Path);
 dir_contents = dir_contents(~ismember({dir_contents.name},{'.','..'}));
 dir_contents = dir_contents(~contains({dir_contents.name},{'.xml','.csv'}));
-dir_contents = dir_contents(contains({dir_contents.name},'.'));
+dir_contents = dir_contents(contains({dir_contents.name},'.svs'));
 dir_contents = {dir_contents.name};
 
 if any(contains(dir_contents,'.'))

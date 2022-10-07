@@ -77,6 +77,10 @@ else
     color_it = {color};
     axis_it = {img_ax};
 end
+
+if app.Pause_Visualization
+    comp_it = {comp_it};
+end
     
 
 for i = 1:length(axis_it)
@@ -98,47 +102,52 @@ for i = 1:length(axis_it)
         end
         hold off
 
-        % Moving rectangular ROI to contain all map data
-        bin_roi = struct2cell(regionprops(bwconvhull(imbinarize(map_it{i},0)),'BoundingBox'));
-
-        % For maps that are all zeros clear out histogram and table
-        if ~isempty(bin_roi)
-            
-            if ~strcmp(color_it{i},'')
-                roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'Color',color_it{i},'FaceAlpha',0);
-                app.(strcat(color_it{i},'_roi')) = roi;
+        if ~app.Pause_Visualization
+            % Moving rectangular ROI to contain all map data
+            bin_roi = struct2cell(regionprops(bwconvhull(imbinarize(map_it{i},0)),'BoundingBox'));
+    
+            % For maps that are all zeros clear out histogram and table
+            if ~isempty(bin_roi)
                 
-                click_vis(app,event,app.(strcat(color_it{i},'_roi')));
-                addlistener(app.(strcat(color_it{i},'_roi')), 'ROIMoved',@(varargin)click_vis(app,event,app.(strcat(color_it{i},'_roi'))));
-
-            else
-                roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'FaceAlpha',0);
+                if ~strcmp(color_it{i},'')
+                    roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'Color',color_it{i},'FaceAlpha',0);
+                    app.(strcat(color_it{i},'_roi')) = roi;
+                    
+                    click_vis(app,event,app.(strcat(color_it{i},'_roi')));
+                    addlistener(app.(strcat(color_it{i},'_roi')), 'ROIMoved',@(varargin)click_vis(app,event,app.(strcat(color_it{i},'_roi'))));
+    
+                else
+                    roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'FaceAlpha',0);
+                    
+                    click_vis(app,event,roi);
+                    addlistener(roi, 'ROIMoved',@(varargin)click_vis(app,event,roi));
+                end
                 
-                click_vis(app,event,roi);
-                addlistener(roi, 'ROIMoved',@(varargin)click_vis(app,event,roi));
-            end
-            
-            if ~strcmp(color_it{i},'')
-                app.([color_it{i},'_rect_position']) = roi.Position;
+                if ~strcmp(color_it{i},'')
+                    app.([color_it{i},'_rect_position']) = roi.Position;
+                else
+                    app.rect_position = roi.Position;
+                end
+    
             else
-                app.rect_position = roi.Position;
+                if ~strcmp(color_it,'')
+                    prev_data = app.Rel_Feat_Table.Data;
+                    prev_columns = app.Rel_Feat_Table.ColumnName;
+    
+                    color_cols = find(contains(prev_columns,color_it{i}));
+    
+                    app.Rel_Feat_Table.Data = prev_data(:,~color_cols);
+    
+    
+                else
+                    cla(app.Rel_Ax)
+                    app.Rel_Feat_Table.Data = {};
+                end
+    
             end
-
         else
-            if ~strcmp(color_it,'')
-                prev_data = app.Rel_Feat_Table.Data;
-                prev_columns = app.Rel_Feat_Table.ColumnName;
-
-                color_cols = find(contains(prev_columns,color_it{i}));
-
-                app.Rel_Feat_Table.Data = prev_data(:,~color_cols);
-
-
-            else
-                cla(app.Rel_Ax)
-                app.Rel_Feat_Table.Data = {};
-            end
-
+            cla(app.Rel_Ax)
+            app.Rel_Feat_Table.Data = {};
         end
     else
 
@@ -157,50 +166,55 @@ for i = 1:length(axis_it)
             app.im.AlphaData = app.Heat_Slide.Value;
         end
         hold off
-
-        % Moving rectangular ROI to contain all map data
-        bin_roi = struct2cell(regionprops(bwconvhull(imbinarize(map_it{i},0)),'BoundingBox'));
-
-        % For maps that are all zeros clear out histogram and table
-        if ~isempty(bin_roi)
-            if ~strcmp(color_it{i},'')
-                roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'Color',color_it{i},...
-                    'FaceAlpha',0);
-                app.(strcat(color_it{i},'_roi')) = roi;
+        
+        if ~app.Pause_Visualization
+            % Moving rectangular ROI to contain all map data
+            bin_roi = struct2cell(regionprops(bwconvhull(imbinarize(map_it{i},0)),'BoundingBox'));
+    
+            % For maps that are all zeros clear out histogram and table
+            if ~isempty(bin_roi)
+                if ~strcmp(color_it{i},'')
+                    roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),'Color',color_it{i},...
+                        'FaceAlpha',0);
+                    app.(strcat(color_it{i},'_roi')) = roi;
+                    
+                    click_vis(app, event, app.(strcat(color_it{i},'_roi')));
+                    addlistener(app.(strcat(color_it{i},'_roi')), 'ROIMoved',@(varargin)click_vis(app,event,app.(strcat(color_it{i},'_roi'))));
+    
+                else
+                    roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),...
+                        'FaceAlpha',0);
+                    click_vis(app, event, roi);
+                    addlistener(roi, 'ROIMoved',@(varargin)click_vis(app,event,roi));
+                    
+                end
                 
-                click_vis(app, event, app.(strcat(color_it{i},'_roi')));
-                addlistener(app.(strcat(color_it{i},'_roi')), 'ROIMoved',@(varargin)click_vis(app,event,app.(strcat(color_it{i},'_roi'))));
-
+                if ~strcmp(color_it{i},'')
+                    app.(strcat(color_it{i},'_rect_position')) = roi.Position;
+                else
+                    app.rect_position = roi.Position;
+                end         
+    
             else
-                roi = images.roi.Rectangle(axis_it{i},'Position',cell2mat(bin_roi),...
-                    'FaceAlpha',0);
-                click_vis(app, event, roi);
-                addlistener(roi, 'ROIMoved',@(varargin)click_vis(app,event,roi));
-                
+                if ~strcmp(color_it{i},'')
+                    prev_data = app.Rel_Feat_Table.Data;
+                    prev_columns = app.Rel_Feat_Table.ColumnName;
+    
+                    color_cols = find(contains(prev_columns,color_it{i}));
+    
+                    new_data = prev_data;
+                    new_data(:,color_cols) = zeros(size(prev_data,1),length(color_cols));
+    
+                    app.Rel_Feat_Table.Data = new_data;
+    
+                else
+                    cla(app.Rel_Ax)
+                    app.Rel_Feat_Table.Data = {};
+                end
             end
-            
-            if ~strcmp(color_it{i},'')
-                app.(strcat(color_it{i},'_rect_position')) = roi.Position;
-            else
-                app.rect_position = roi.Position;
-            end         
-
         else
-            if ~strcmp(color_it{i},'')
-                prev_data = app.Rel_Feat_Table.Data;
-                prev_columns = app.Rel_Feat_Table.ColumnName;
-
-                color_cols = find(contains(prev_columns,color_it{i}));
-
-                new_data = prev_data;
-                new_data(:,color_cols) = zeros(size(prev_data,1),length(color_cols));
-
-                app.Rel_Feat_Table.Data = new_data;
-
-            else
-                cla(app.Rel_Ax)
-                app.Rel_Feat_Table.Data = {};
-            end
+            cla(app.Rel_Ax)
+            app.Rel_Feat_Table.Data = {};
         end
 
     end

@@ -15,8 +15,6 @@ if app.Comparing
         if app.Red_Only
 
             dist_roi_idx = inROI(app.dist_roi,[dist_data{:,1}],[dist_data{:,2}]);
-            %include_names = dist_data.ImgLabel(dist_roi_idx);
-            %include_idx = find(ismember(app.Full_Feature_set.ImgLabel,include_names));
 
             % Making new handles.img_paths and handles.mask_paths from ROI
             % selection
@@ -31,8 +29,6 @@ if app.Comparing
         if app.Blue_Only
 
             comp_roi_idx = inROI(app.comp_roi,[dist_data{:,1}],[dist_data{:,2}]);
-            %include_names = dist_data.ImgLabel(comp_roi_idx);
-            %include_idx = find(ismember(app.Full_Feature_set.ImageLabel,include_names));
 
             blue_image_names = dist_data.ImgLabel(comp_roi_idx);
             
@@ -43,8 +39,6 @@ if app.Comparing
         if ~app.Red_Only && ~app.Blue_Only
             
             comp_roi_idx = inROI(app.comp_roi,[dist_data{:,1}],[dist_data{:,2}]);
-            %include_names = dist_data.ImgLabel(comp_roi_idx);
-            %include_idx = find(ismember(app.Full_Feature_set.ImgLabel,include_names));
 
             blue_image_names = dist_data.ImgLabel(comp_roi_idx);
             
@@ -52,8 +46,6 @@ if app.Comparing
             app.Blue_Comp_Image.Value = app.Blue_Comp_Image.Items(1);
             
             dist_roi_idx = inROI(app.dist_roi,[dist_data{:,1}],[dist_data{:,2}]);
-            %include_names = dist_data.ImgLabel(dist_roi_idx);
-            %include_idx = find(ismember(app.Full_Feature_set.ImgLabel,include_names));
 
             % Making new handles.img_paths and handles.mask_paths from ROI
             % selection
@@ -68,17 +60,14 @@ if app.Comparing
         % Only really need to get the height values which are [xmin ymin width
         % height]
         
-        % To get values that are within the ROI
-        %dist_data = handles.Dist_Data;
-        
         if app.Red_Only
             sel_data_min = app.dist_roi.Position(2);
             sel_data_max = app.dist_roi.Position(2)+app.dist_roi.Position(4);
             
             sel_class_min = app.dist_roi.Position(1);
             sel_class_max = sel_class_min+app.dist_roi.Position(3);
-            %n_classes = length(unique(dist_data.Class));
-            include_classes = unique(dist_data.Class);
+            % Updating to be in correct order after modifications by user
+            include_classes = app.Plot_Options.LabelOrder;
             include_classes = include_classes(round(sel_class_min):round(sel_class_max));
             
             app.dist_roi.Label = ['Min: ',num2str(sel_data_min,'%0.4f'),' to Max: ',num2str(sel_data_max,'%0.4f')];
@@ -101,8 +90,8 @@ if app.Comparing
             
             comp_class_min = app.comp_roi.Position(1);
             comp_class_max = comp_class_min+app.comp_roi.Position(3);
-            %n_classes = length(unique(dist_data.Class));
-            include_classes = unique(dist_data.Class);
+            % Updating to be in correct order after modifications by user
+            include_classes = app.Plot_Options.LabelOrder;
             include_classes = include_classes(round(comp_class_min):round(comp_class_max));
             
             app.comp_roi.Label = ['Min: ',num2str(comp_data_min,'%0.4f'),' to Max: ',num2str(comp_data_max,'%0.4f')];
@@ -125,8 +114,8 @@ if app.Comparing
             
             comp_class_min = app.comp_roi.Position(1);
             comp_class_max = comp_class_min+app.comp_roi.Position(3);
-            %n_classes = length(unique(dist_data.Class));
-            include_classes = unique(dist_data.Class);
+            % Updating to correct order after user modifications
+            include_classes = app.Plot_Options.LabelOrder;
             if round(comp_class_max)>length(include_classes)
                 if round(comp_class_min)<1
                     include_classes = include_classes(1:end);
@@ -157,8 +146,8 @@ if app.Comparing
             
             sel_class_min = app.dist_roi.Position(1);
             sel_class_max = sel_class_min+app.dist_roi.Position(3);
-            %n_classes = length(unique(dist_data.Class));
-            include_classes = unique(dist_data.Class);
+            % Updating based on user modifications
+            include_classes = app.Plot_Options.LabelOrder;
             if round(sel_class_min)<1
                 if round(sel_class_max)>length(include_classes)
                     include_classes = include_classes(1:length(include_classes));
@@ -188,12 +177,6 @@ else
     if length(app.map_idx)>1
 
         roi_idx = inROI(app.dist_roi,[dist_data{:,1}],[dist_data{:,2}]);
-        %include_names = dist_data.ImgLabel(roi_idx);
-        
-        %include_idx = find(ismember(app.Full_Feature_set.ImgLabel,include_names));
-        
-        % Making new handles.img_paths and handles.mask_paths from ROI
-        % selection
         image_names = dist_data.ImgLabel(roi_idx);
                     
         app.Image_Name_Label.Items = Combine_Name_Label(app,image_names,[]);
@@ -212,8 +195,8 @@ else
         
         class_min = app.dist_roi.Position(1);
         class_max = class_min+app.dist_roi.Position(3);
-        %n_classes = length(unique(dist_data.Class));
-        include_classes = unique(dist_data.Class);
+        % Updating based on user modifications
+        include_classes = app.Plot_Options.LabelOrder;
         if round(class_max)<=length(include_classes)
             if round(class_min)==0
                 include_classes = include_classes(ceil(class_min):round(class_max));
