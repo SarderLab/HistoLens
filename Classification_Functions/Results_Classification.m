@@ -1,5 +1,5 @@
 % --- Function to generate performance plots and reports on trained models
-function Results_Classification(app,test_data,test_labels,predictions)
+function Results_Classification(app,test_data,test_labels,predictions,unlabeled_predictions)
 
 if ~isnumeric(app.Dist_Data.Class)
     % Erase previous confusion matrix
@@ -39,7 +39,7 @@ else
 end
 
 % Generating classification performance metrics
-if ~isnumeric(app.Dist_Data.Class)
+if ~isnumeric(test_data.Class)
     % categorical classification metrics
     % Accuracy, F1, TPR, FPR, Recall, Precision
     confusion_matrix = confusionmat(test_data.Class,predictions);
@@ -111,8 +111,9 @@ end
 
 % Getting the current slide-names
 current_slides = cellfun(@(x)strsplit(x,'_'),test_labels,'UniformOutput',false);
-if length(current_slides(1))>2
-    current_slides = cellfun(@(x)strjoin(x{1:end-1},'_'),current_slides,'UniformOutput',false);
+lengths = cellfun('length',current_slides);
+if any(lengths>2)
+    current_slides = cellfun(@(x)strjoin(x(1:end-1),'_'),current_slides,'UniformOutput',false);
 else
     current_slides = cellfun(@(x)x{1},current_slides,'UniformOutput',false);
 end
@@ -127,16 +128,28 @@ if ~isnumeric(test_data.Class)
         slide_idx = find(strcmp(current_slides,this_slide));
 
         slide_class = test_data.Class(slide_idx);
-
         slide_confusionmat = confusionmat(slide_class,predictions(slide_idx),'Order',unique(test_data.Class)');
+        
+        % For slide-level label classification
         if size(slide_confusionmat,1)==1
             slide_predictions = zeros(1,length(unique(test_data.Class)));
             slide_predictions(find(ismember(slide_class{1},unique(test_data.Class)))) = slide_confusionmat;
         else
             slide_predictions = sum(slide_confusionmat,1);
         end
-        
-        all_slide_preds(j+1,:) = [this_slide,strsplit(num2str(slide_predictions),' '),slide_class(1)];
+        if length(slide_class)==1
+            all_slide_preds(j+1,:) = [this_slide,strsplit(num2str(slide_predictions),' '),slide_class(1)];
+        else
+            slide_labels_count = cell(1,length(unique(test_data.Class)));
+            available_classes = unique(test_data.Class);
+            for l = 1:length(available_classes)
+                current_class = available_classes{l};
+                count_labels = length(find(strcmp(slide_class,current_class)));
+                
+                slide_labels_count{1,l} = strjoin({num2str(count_labels),current_class},' ');
+            end
+            all_slide_preds(j+1,:) = [this_slide,strsplit(num2str(slide_predictions),' '),strjoin(slide_labels_count,', ')];
+        end
 
     end
 
@@ -186,12 +199,17 @@ end
 full_imglabels = app.Dist_Data.ImgLabel;
 full_class = app.Dist_Data.Class;
 % Getting the training samples and their labels
-train_idx = find(~ismember(full_imglabels,test_labels));
+if isempty(unlabeled_predictions)
+    train_idx = find(~ismember(full_imglabels,test_labels));
+else
+    train_idx = find(~ismember(full_imglabels,[test_labels;unlabeled_predictions.ImgLabel]));
+end
+
 train_imglabels = full_imglabels(train_idx);
 train_class = full_class(train_idx);
 
 test_imglabels = test_labels;
-
+    
 if ~isnumeric(full_class)
     train_sample_labels = cellfun(@(x) strjoin([{'Train'},x],' '),train_class,'UniformOutput',false);
     test_sample_labels = cellfun(@(x) strjoin([{'Predicted'},x],' '),predictions,'UniformOutput',false);
@@ -200,8 +218,21 @@ else
     test_sample_labels = cellfun(@(x) strjoin([{'Predicted'},x],' '),cellstr(num2str(predictions)),'UniformOutput',false);
 end
 
-app.Current_Model_Labels = table([train_imglabels;test_imglabels],[train_sample_labels;test_sample_labels],...
-    'VariableNames',{'ImgLabel','Class'});
+if isempty(unlabeled_predictions)
+    app.Current_Model_Labels = table([train_imglabels;test_imglabels],[train_sample_labels;test_sample_labels],...
+        'VariableNames',{'ImgLabel','Class'});
+else
+    if ~isnumeric(full_class)
+        unlabeled_preds = cellfun(@(x) strjoin([{'Predicted'},x],' '),unlabeled_predictions.Class,'UniformOutput',false);
+    else
+        unlabeled_preds = cellfun(@(x) strjoin([{'Predicted'},x],' '),cellstr(num2str(unlabeled_predictions.Class)),'UniformOutput',false);
+    end
+    
+    unlabeled_imglabels = unlabeled_predictions.ImgLabel;
+    
+    app.Current_Model_Labels = table([train_imglabels;test_imglabels;unlabeled_imglabels],[train_sample_labels;test_sample_labels;unlabeled_preds],...
+        'VariableNames',{'ImgLabel','Class'});
+end
 
 app.AddCurrentModelPredictedLabelsButton.Enable = 'on';
     

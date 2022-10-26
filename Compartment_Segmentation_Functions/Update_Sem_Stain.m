@@ -8,8 +8,9 @@ sem_model_name = sem_model.Title;
 % Finding index of this semantic segmentation model
 all_sem_models = cell(1,length(fieldnames(app.Semantic_Sub_Compartment_Details)));
 for i = 1:length(fieldnames(app.Semantic_Sub_Compartment_Details))
-    all_sem_models(i) = app.Semantic_Sub_Compartment_Details
-app.Semantic_Sub_Compartment_Details.
+    all_sem_models(i) = app.Semantic_Sub_Compartment_Details;
+end
+
 
 
 
