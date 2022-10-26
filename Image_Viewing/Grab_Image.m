@@ -56,10 +56,6 @@ if strcmp(app.Blue_Comp_Image.Visible,'on') || strcmp(app.Red_Comp_Image.Visible
             app.Red_Only = true;
         else
             app.Comparing = false;
-            app.PairwiseButton.Enable = 'off';
-            app.PairwiseButton.Value = 0;
-            app.IndividualButton.Value = 1;
-            app.GlobalValueButton.Value = 0;
             
             Flip_Image_Listbox(app,event)
             Plot_Feat(app,event)

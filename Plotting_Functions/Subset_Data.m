@@ -5,6 +5,7 @@ data_ind = ones(height(app.Full_Feature_set.(app.Structure)),1);
 
 if ~isempty(app.Subset_Master)
     if ~isempty(app.Subset_Master.(app.Structure))
+        app.Plot_Options = [];
         % Parent nodes in app.Subset_Master
         parent_nodes = {app.Subset_Master.(app.Structure).Parent};
         parent_nodes = cellfun(@(x) x.Text,parent_nodes,'UniformOutput',false);
@@ -12,13 +13,6 @@ if ~isempty(app.Subset_Master)
         for j = 1:length(app.Subset_Master.(app.Structure))
             
             remove_label = app.Subset_Master.(app.Structure)(j).Text;
-
-            % Updating Plot_Options after removing label
-            if ~isempty(app.Plot_Options)
-                if ismember('LabelOrder',fieldnames(app.Plot_Options))
-                    app.Plot_Options.LabelOrder(find(strcmp(remove_label,app.Plot_Options.LabelOrder))) = [];
-                end
-            end
     
             ind_labels = app.Aligned_Labels.(app.Structure).(parent_nodes{j}).Aligned;
             % Finding overlap with existing ignored labels

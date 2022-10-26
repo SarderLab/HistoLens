@@ -7,12 +7,6 @@ function Plot_Feat(app,event)
         
 if app.new_Persistent_label
     
-    if length(app.map_idx)==1
-        plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
-    else
-        plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
-    end
-    
     all_text_handles = findall(app.Dist_Ax,'type','Text');
     all_text = {findall(app.Dist_Ax,'type','Text').String};
     all_labels = find(cellfun(@(x)contains(x,'\leftarrow'),all_text));
@@ -23,8 +17,7 @@ if app.new_Persistent_label
     
     delete(all_text_handles(all_labels))
     
-    
-    if length(plot_idx)==1
+    if length(app.map_idx)==1
 
         all_class = app.Plot_Options.LabelOrder;
         if ~isnumeric(all_class)
@@ -164,6 +157,4 @@ end
 
 Feat_Stats(app,event)
 Check_Classification(app)
-
-
 

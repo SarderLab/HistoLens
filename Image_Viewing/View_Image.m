@@ -9,19 +9,24 @@ if ~app.Comparing
     image_name = app.Image_Name_Label.Value;
     image_name = strsplit(image_name,',');
     image_name = image_name{1};
+
+    if ~isempty(app.Current_Name)
+        app.Previous_Name = app.Current_Name;
+    end
+    app.Current_Name = {image_name};
     
     [raw_img,norm_img,~,~] = Extract_Spec_Img(app,event,image_name);
     
     axes(app.Img_Ax);
 
-    scaled_norm_img = Add_Scalebar(norm_img,app.Img_Ax,app.MPP);
-    scaled_img = Add_Scalebar(raw_img,app.Img_Ax,app.MPP);
+    scaled_norm_img = Add_Scalebar(norm_img,app.Img_Ax,app.MPP,app);
+    scaled_img = Add_Scalebar(raw_img,app.Img_Ax,app.MPP,app);
 
     app.Current_NormImg{1} = scaled_norm_img;
     app.Current_Img{1} = scaled_img;
     
     imshow(scaled_img), axis image  
-    Scale_Text(scaled_img, app.Img_Ax, app.MPP)
+    Scale_Text(scaled_img, app.Img_Ax, app.MPP,app)
     hold on
 
     app.Heat_Slide.Enable = 'on';
@@ -96,6 +101,15 @@ else
         image_name = app.Red_Comp_Image.Value;
         image_name = strsplit(image_name,',');
         image_name = image_name{1};
+
+        if ~isempty(app.Current_Name)
+            if iscell(app.Current_Name{1})
+                app.Previous_Name{1} = app.Current_Name{1};
+            else
+                app.Previous_Name{1} = app.Current_Name;
+            end
+        end
+        app.Current_Name{1} = {image_name};
         
         [raw_img,norm_img,~,~] = Extract_Spec_Img(app,event,image_name);
         
@@ -105,14 +119,14 @@ else
 
         axes(app.Red_Img_Ax);
         
-        scaled_img = Add_Scalebar(raw_img, app.Red_Img_Ax, app.MPP);
-        scaled_norm_img = Add_Scalebar(norm_img,app.Red_Img_Ax,app.MPP);
+        scaled_img = Add_Scalebar(raw_img, app.Red_Img_Ax, app.MPP,app);
+        scaled_norm_img = Add_Scalebar(norm_img,app.Red_Img_Ax,app.MPP,app);
 
         app.Current_Img{1} = scaled_img;
         app.Current_NormImg{1} = scaled_norm_img;
 
         imshow(scaled_img), axis image%, title('Red ROI Image')
-        Scale_Text(scaled_img, app.Red_Img_Ax, app.MPP)
+        Scale_Text(scaled_img, app.Red_Img_Ax, app.MPP,app)
 
         hold on
 
@@ -206,20 +220,29 @@ else
         image_name = app.Blue_Comp_Image.Value;
         image_name = strsplit(image_name,',');
         image_name = image_name{1};
+
+        if ~isempty(app.Current_Name)
+            try
+                app.Previous_Name{2} = app.Current_Name{2};
+            catch
+                app.Previous_Name{2} = app.Current_Name;
+            end
+        end
+        app.Current_Name{2} = {image_name};
         
         [raw_img,norm_img,~,~] = Extract_Spec_Img(app,event,image_name);
         app.Current_Img{2} = raw_img;
 
         axes(app.Blue_Img_Ax);
         
-        scaled_img = Add_Scalebar(raw_img, app.Blue_Img_Ax, app.MPP);
-        scaled_norm_img = Add_Scalebar(norm_img,app.Blue_Img_Ax,app.MPP);
+        scaled_img = Add_Scalebar(raw_img, app.Blue_Img_Ax, app.MPP, app);
+        scaled_norm_img = Add_Scalebar(norm_img,app.Blue_Img_Ax,app.MPP,app);
 
         app.Current_Img{2} = scaled_img;
         app.Current_NormImg{2} = scaled_norm_img;   
 
         imshow(scaled_img), axis image%, title('Blue ROI Image')
-        Scale_Text(scaled_img, app.Blue_Img_Ax, app.MPP)
+        Scale_Text(scaled_img, app.Blue_Img_Ax, app.MPP,app)
 
         hold on   
 
@@ -308,6 +331,7 @@ else
         red_image_name = app.Red_Comp_Image.Value;
         red_image_name = strsplit(red_image_name,',');
         red_image_name = red_image_name{1};
+
         [raw_img,norm_img,~,~] = Extract_Spec_Img(app,event,red_image_name);
         
         blue_image_name = app.Blue_Comp_Image.Value;
@@ -315,7 +339,8 @@ else
         blue_image_name = blue_image_name{1};
         [raw_comp_img,norm_comp_img,~,~] = Extract_Spec_Img(app,event,blue_image_name);
         
-        %app.Current_Img = {raw_img,raw_comp_img};
+        app.Previous_Name = app.Current_Name;
+        app.Current_Name = {{red_image_name},{blue_image_name}};
 
         app.Heat_Slide.Enable = 'on';
 
@@ -323,14 +348,14 @@ else
             % Get map(s)
             axes(app.Red_Img_Ax)
             
-            scaled_img = Add_Scalebar(raw_img, app.Red_Img_Ax, app.MPP);
-            scaled_norm_img = Add_Scalebar(norm_img,app.Red_Img_Ax,app.MPP);
+            scaled_img = Add_Scalebar(raw_img, app.Red_Img_Ax, app.MPP, app);
+            scaled_norm_img = Add_Scalebar(norm_img,app.Red_Img_Ax,app.MPP, app);
 
             app.Current_Img{1} = scaled_img;
             app.Current_NormImg{1} = scaled_norm_img;
 
             imshow(scaled_img), axis image%, title('Red ROI Image')   
-            Scale_Text(scaled_img, app.Red_Img_Ax, app.MPP)
+            Scale_Text(scaled_img, app.Red_Img_Ax, app.MPP, app)
 
             hold on
 
@@ -342,14 +367,14 @@ else
 
             axes(app.Blue_Img_Ax)
             
-            scaled_img = Add_Scalebar(raw_comp_img, app.Blue_Img_Ax, app.MPP);
-            scaled_norm_img = Add_Scalebar(norm_comp_img, app.Blue_Img_Ax,app.MPP);
+            scaled_img = Add_Scalebar(raw_comp_img, app.Blue_Img_Ax, app.MPP, app);
+            scaled_norm_img = Add_Scalebar(norm_comp_img, app.Blue_Img_Ax,app.MPP, app);
 
             app.Current_Img{2} = scaled_img;
             app.Current_NormImg{2} = scaled_norm_img;
 
             imshow(scaled_img), axis image%, title('Blue ROI Image')
-            Scale_Text(scaled_img, app.Blue_Img_Ax, app.MPP)
+            Scale_Text(scaled_img, app.Blue_Img_Ax, app.MPP, app)
 
             hold on
 
@@ -496,7 +521,7 @@ if length(app.Current_Img)==1
     cla(app.UIAxes)
     axes(app.UIAxes)
     imshow(app.Current_Img{1})
-    Scale_Text(app.Current_Img{1}, app.UIAxes, app.MPP)
+    Scale_Text(app.Current_Img{1}, app.UIAxes, app.MPP, app)
      
     if height(app.UITable5.Data)>0
         app.UITable5.Data(:,2) = num2cell(cell2mat(app.UITable5.Data(:,2))+sum(app.new_annot,2));
@@ -510,13 +535,13 @@ else
     cla(app.UIAxes)
     axes(app.UIAxes)
     imshow(app.Current_Img{1})
-    Scale_Text(app.Current_Img{1}, app.UIAxes, app.MPP)
+    Scale_Text(app.Current_Img{1}, app.UIAxes, app.MPP, app)
     
     app.UIAxes.Visible = 'on';
     cla(app.UIAxes2)
     axes(app.UIAxes2)
     imshow(app.Current_Img{2})
-    Scale_Text(app.Current_Img{2},app.UIAxes2,app.MPP)
+    Scale_Text(app.Current_Img{2},app.UIAxes2,app.MPP, app)
     
     % Keeping track of number of annotated objects per class
     if height(app.UITable5.Data)>0

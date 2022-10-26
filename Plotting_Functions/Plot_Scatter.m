@@ -105,6 +105,7 @@ else
     
         app.PCA_Vals = [{explained},{coeff}];
         
+        axes(app.Dist_Ax)
         if isnumeric(sub_data.Class(1,1))
             app.Dist_Data = cell2table(horzcat(num2cell(score(:,1:2)),...
                 sub_data.ImgLabel(:),num2cell(sub_data.Class(:))),...
@@ -136,6 +137,7 @@ else
         end
     
     else
+        axes(app.Dist_Ax)
         if isnumeric(app.Dist_Data.Class(1,1))
         
             g_scat = gscatter(app.Dist_Ax,app.Dist_Data.Score1,app.Dist_Data.Score2,app.Dist_Data.Class,colormap(jet(length(unique(sub_data.Class(:))))),[],[],'off');
@@ -145,9 +147,7 @@ else
                 length(unique(app.Dist_Data.Class(:)))),'YTickLabel',cellstr(num2str(unique(app.Dist_Data.Class(:))))')
     
         else
-        
             gscatter(app.Dist_Ax,app.Dist_Data.Score1,app.Dist_Data.Score2,app.Dist_Data.Class)
-        
         end
     
         xlabel('PCA 1'), ylabel('PCA 2'), title('Scatter plot of PC1 and PC2')

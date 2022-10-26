@@ -17,10 +17,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
         app.Notes_edit.Enable = 'off';
     end
 
-    selected1 = app.Red_Comp_Image.Value;
-    
-    selected1 = strsplit(selected1,',');
-    selected1 = selected1{1};
+    selected1 = app.Current_Name{1};
     
     notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected1),:);
     notes_contents = notes_contents{1};
@@ -32,10 +29,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
         app.Img_one_Edit.Value = '';
     end
     
-    selected2 = app.Blue_Comp_Image.Value;
-    
-    selected2 = strsplit(selected2,',');
-    selected2 = selected2{1};
+    selected2 = app.Current_Name{2};
     
     notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected2),:);
     notes_contents = notes_contents{1};
@@ -64,10 +58,7 @@ else
 
     % handles.Notes should be a table with one column corresponding to image
     % name and the other with any notes the user makes.
-    selected = app.Image_Name_Label.Value;
-    
-    selected = strsplit(selected,',');
-    selected = selected{1};
+    selected = app.Current_Name;
     
     notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected),:);
     notes_contents = notes_contents{1};

@@ -53,6 +53,7 @@ end
 % Add Labels tab
 app.AddSlideLabelfromFileButton.Enable = 'on';
 app.AddStructureLabelfromFileButton.Enable = 'on';
+app.MergeLabelsButton.Enable = 'on';
 
 % Enabling Normalization Labels tab
 app.MetadataLabelDropDown.Enable = 'on';

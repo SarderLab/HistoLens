@@ -12,7 +12,6 @@ else
 
     % Getting current distribution
     dist_properties = findall(app.Dist_Ax,'type','Line');
-    assignin('base','dist_properties',dist_properties)
 
     % Applying new plot_options to each group scatter object
     for g = 1:length(dist_properties)
@@ -25,10 +24,11 @@ else
             % Groups are added to gscatter in ascending order 
             match_name = length(dist_properties)-g+1;
         end
-        group_scatter.Color = app.Plot_Options.(strcat('Label_',string(match_name))).Color;
-        group_scatter.Marker = app.Plot_Options.(strcat('Label_',string(match_name))).Marker;
-        group_scatter.MarkerSize = app.Plot_Options.(strcat('Label_',string(match_name))).MarkerSize;
-
+        if ~isempty(match_name)
+            group_scatter.Color = app.Plot_Options.(strcat('Label_',string(match_name))).Color;
+            group_scatter.Marker = app.Plot_Options.(strcat('Label_',string(match_name))).Marker;
+            group_scatter.MarkerSize = app.Plot_Options.(strcat('Label_',string(match_name))).MarkerSize;
+        end
     end
 end
 

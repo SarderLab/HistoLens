@@ -67,6 +67,3 @@ end
 xlabel('Class')
 ylabel(app.feature_encodings.Feature_Names{app.map_idx})
 title(app.feature_encodings.Feature_Names{app.map_idx})
-
-
-

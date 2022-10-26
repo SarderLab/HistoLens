@@ -1,5 +1,5 @@
 % --- Function to add scale bar text
-function Scale_Text(img, img_axis, mpp)
+function Scale_Text(img, img_axis, mpp, app)
 
 % size and width of scale bar
 if ~isnan(mpp) & mpp~=0
@@ -16,9 +16,13 @@ scale_width = 5;
 
 % Text location
 text_loc = [rows-15-scale_width,cols-15-(scale_length/2)];
-scale_text = text(img_axis, text_loc(2), text_loc(1), text_text,'FontSize',10,...
-    'FontWeight','bold','Color',[1,1,1], 'HorizontalAlignment','center');
+if isempty(app.Scalebar_Options)
+    app.Scalebar_Options.FontSize = 10;
+    app.Scalebar_Options.Color = [1,1,1];
+end
 
 
+app.scale_text = text(img_axis,text_loc(2),text_loc(1),text_text,'FontSize',app.Scalebar_Options.FontSize,...
+    'FontWeight','bold','Color',app.Scalebar_Options.Color,'HorizontalAlignment','center');
 
 
