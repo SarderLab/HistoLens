@@ -1,6 +1,7 @@
 % --- Function to save notes input by user to new filename set up when the
 % Go-Button is pressed
 function Save_Notes(app,event)
+
 % If a notes file is not already loaded
 if isempty(app.Notes_File)
     

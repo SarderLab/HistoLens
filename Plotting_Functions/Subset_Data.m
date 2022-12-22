@@ -11,10 +11,9 @@ if ~isempty(app.Subset_Master)
         parent_nodes = cellfun(@(x) x.Text,parent_nodes,'UniformOutput',false);
         
         for j = 1:length(app.Subset_Master.(app.Structure))
-            
             remove_label = app.Subset_Master.(app.Structure)(j).Text;
-    
-            ind_labels = app.Aligned_Labels.(app.Structure).(parent_nodes{j}).Aligned;
+            label_idx = find(strcmp(parent_nodes{j},app.Aligned_Labels.(app.Structure).AllLabels));
+            ind_labels = app.Aligned_Labels.(app.Structure).(strcat('Label_',num2str(label_idx))).Aligned;
             % Finding overlap with existing ignored labels
             [T,rows_in_T] = innerjoin(ind_labels,app.Ignore_idx.(app.Structure));
             [~,sortinds] = sort(rows_in_T);

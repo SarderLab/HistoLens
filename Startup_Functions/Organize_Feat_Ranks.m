@@ -6,10 +6,11 @@ selected_structure = app.Structure;
 
 if ~strcmp(app.FeatureRankingsUsedDropDown.Value,'None')
     
-    current_file = app.Feat_Rank.(selected_structure).(strrep(app.FeatureRankingsUsedDropDown.Value,' ',''));
-
-    total_rank = cell2table([current_file.Properties.VariableNames',...
-        table2cell(current_file(1,:))'],'VariableNames',{'Feature_Names','Total'});
+    feat_rank_idx = find(strcmp(app.FeatureRankingsUsedDropDown.Value,app.Feat_Rank.(selected_structure).AllRanks));
+    current_file = app.Feat_Rank.(selected_structure).Table(:,feat_rank_idx);
+    
+    total_rank = cell2table([app.base_Feature_set.(selected_structure).Properties.VariableNames(1:end-1)',...
+        table2cell(current_file(:,1))],'VariableNames',{'Feature_Names','Total'});
     
     % Compartment Column
     comp_cell = cell(height(total_rank),1);

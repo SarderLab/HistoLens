@@ -79,18 +79,20 @@ if length(unique(app.Dist_Data.Class))>1
             values{count+7,1} = string(stats.sd);
             
         else
-            
-            
+                        
             % Performing 1-way ANOVA on distribution data
             [p,tbl,stats] = anova1(app.Dist_Data{:,1},app.Dist_Data.Class,'off');
                         
             % Getting sub-classes for current feature
             current_feature = app.SelectLabelDropDown.Value;
+            current_label_idx = find(strcmp(current_feature,app.Aligned_Labels.(app.Structure).AllLabels));
+            
             
             % Breaking up classes into quantile ranges
             if isnumeric(app.Dist_Data.Class)
                 number_range = true;
-                sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
+                %sub_classes = app.Aligned_Labels.(app.Structure).(strcat('Label_',num2str(current_label_idx))).Sub_Class;
+                sub_classes = quantile(app.Dist_Data.Class,[0.25,0.5,0.75]);
             else
                 number_range = false;
                 sub_classes = unique(app.Dist_Data.Class);
@@ -101,13 +103,17 @@ if length(unique(app.Dist_Data.Class))>1
             for i = 1:length(sub_classes)
                 % Summary values of data
                 if number_range
-                    first_val = strsplit(sub_classes{i},'<');
-                    first_val = first_val{1};
-                    first_val = str2num(first_val);
-                    sec_val = strsplit(sub_classes{i},'=');
-                    sec_val = sec_val{end};
-                    sec_val = str2num(sec_val);
-                    
+                    if i==1
+                        first_val = min(app.Dist_Data.Class,[],'all');
+                        sec_val = sub_classes(i);
+                    elseif i==length(sub_classes)
+                        first_val = sub_classes(i);
+                        sec_val = max(app.Dist_Data.Class,[],'all');
+                    else
+                        first_val = sub_classes(i-1);
+                        sec_val = sub_classes(i);
+                    end
+                    string_sub_class = strcat(num2str(first_val),'<=X<=',num2str(sec_val));
                     class_data = app.Dist_Data(find(app.Dist_Data.Class>=first_val & app.Dist_Data.Class<=sec_val),1);
                    
                 else
@@ -124,7 +130,11 @@ if length(unique(app.Dist_Data.Class))>1
                     values{count+1,1} = '-';
     
                     % Class-specific summaries
-                    descrip{count+2,1} = sub_classes{i};
+                    if ~number_range
+                        descrip{count+2,1} = sub_classes{i};
+                    else
+                        descrip{count+2,1} = string_sub_class;
+                    end
                     values{count+2,1} = '-';
                     descrip{count+3,1} = 'Number of Samples:';
                     values{count+3,1} = string(height(class_data));
@@ -177,7 +187,8 @@ if length(unique(app.Dist_Data.Class))>1
         % Breaking up classes into quantile ranges
         if isnumeric(classes)
             number_range = true;
-            sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
+            %sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
+            sub_classes = quantile(app.Dist_Data.Class,[0.25,0.5,0.75]);
         else
             number_range = false;
             sub_classes = classes;
@@ -193,12 +204,23 @@ if length(unique(app.Dist_Data.Class))>1
         if number_range
             range_class = zeros(height(app.Dist_Data),1);
             for t = 1:length(sub_classes)
-                first_val = strsplit(sub_classes{t},'<');
-                first_val = first_val{1};
-                first_val = str2num(first_val);
-                sec_val = strsplit(sub_classes{t},'=');
-                sec_val = sec_val{end};
-                sec_val = str2num(sec_val);
+%                 first_val = strsplit(sub_classes{t},'<');
+%                 first_val = first_val{1};
+%                 first_val = str2num(first_val);
+%                 sec_val = strsplit(sub_classes{t},'=');
+%                 sec_val = sec_val{end};
+%                 sec_val = str2num(sec_val);
+                if t == 1
+                    first_val = min(app.Dist_Data.Class,[],'all');
+                    sec_val = sub_classes(t);
+                elseif t==length(sub_classes)
+                    first_val = sub_classes(t);
+                    sec_val = max(app.Dist_Data.Class,[],'all');
+                else
+                    first_val = sub_classes(t-1);
+                    sec_val = sub_classes(t);
+                end
+                string_sub_class = strcat(num2str(first_val),'<=X<=',num2str(sec_val));
 
                 range_class(find(app.Dist_Data.Class>=first_val & app.Dist_Data.Class<=sec_val)) = t;
             end

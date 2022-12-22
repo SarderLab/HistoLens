@@ -14,7 +14,6 @@ else
     end
 end
 
-
 img_id = name_parts{end};
 img_id = strsplit(img_id,'.');
 img_id = str2double(img_id{1});
@@ -50,12 +49,35 @@ if ~isempty(slide_idx)
         app.MPP = mpp;
     end
     
-    % Make sure structure index is a property
-    structure_regions = annotations.item(app.structure_idx.(app.Structure)-1);
-    regions = structure_regions.getElementsByTagName('Region');
+    % Adjustments for if multiple annotation IDs are combined into a single
+    % structure (See Compartment_Segmentation_Functions/Extract_Rand_Img.m
+    % Lines 23-67 for more complete description)
+    structure_id = app.structure_idx.(app.Structure);
+    if length(structure_id)>1
+        structure_regions = cell(1);
+        n_structures = zeros(1);
+        for s = 1:length(structure_id)
+            structure_regions = [structure_regions;{annotations.item(structure_id(s)-1)}];
+            n_structures(s) = annotations.item(structure_id(s)-1).getLength;
+        end
+        structure_regions = structure_regions(2:end);
+        pre_search_num = img_id;
+        ann_count = 0;
+        while pre_search_num>0 && ann_count<=length(n_structures)
+            ann_count = ann_count+1;
+            current_sr = n_structures(ann_count);
+            pre_search_num = pre_search_num-current_sr;
+        end
+        img_id = pre_search_num+n_structures(ann_count)-1;
+        regions = structure_regions{ann_count}.getElementsByTagName('Region');
+    else
+        structure_regions = annotations.item(structure_id-1);
+        regions = structure_regions.getElementsByTagName('Region');
+        img_id = img_id-1;
+    end
     
     % Pulling out specific region
-    reg = regions.item(img_id-1);
+    reg = regions.item(img_id);
     verts = reg.getElementsByTagName('Vertex');
     xy = zeros(verts.getLength-1,2);
     for vi = 0:verts.getLength-1
@@ -73,24 +95,24 @@ if ~isempty(slide_idx)
     raw_I = imread(strcat(slide_path,'.svs'),'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
     mask = poly2mask(mask_coords(:,1),mask_coords(:,2),size(raw_I,1),size(raw_I,2));
     
-    if ismember('StainNormalization',fieldnames(app.Seg_Params.(app.Structure)))
-        norm_I = normalizeStaining(raw_I,240,0.15,1,app.Seg_Params.(app.Structure).StainNormalization.Means,...
-            app.Seg_Params.(app.Structure).StainNormalization.Maxs);
+    if ismember('StainNormalization',fieldnames(app.Seg_Params))
+        norm_I = normalizeStaining(raw_I,240,0.15,1,app.Seg_Params.StainNormalization.Means,...
+            app.Seg_Params.StainNormalization.Maxs);
     else
         norm_I = raw_I;
     end
     
-    current_seg_params = app.Seg_Params.(app.Structure).(slide_idx_name).CompartmentSegmentation;
+    current_seg_params = app.Seg_Params.(slide_idx_name).CompartmentSegmentation;
     if ~ismember('Path',fieldnames(current_seg_params))
 
-        composite = Comp_Seg_Gen(app.Seg_Params.(app.Structure).(slide_idx_name).CompartmentSegmentation,norm_I,mask);
+        composite = Comp_Seg_Gen(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
     else
         % Special case hack I hate this
-        raw_I = imresize(raw_I,4);
-        norm_I = imresize(norm_I,4);
-        mask = imresize(mask,4);
+        %raw_I = imresize(raw_I,4);
+        %norm_I = imresize(norm_I,4);
+        %mask = imresize(mask,4);
+        % It's okay, past Sam, I'll make the bad lines go away.
         
-
         img_name = strcat(slide_name,'_',num2str(img_id));
         composite = Comp_Seg_Gen(current_seg_params,norm_I,img_name);
     end

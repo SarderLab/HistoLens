@@ -55,13 +55,11 @@ app.AddSlideLabelfromFileButton.Enable = 'on';
 app.AddStructureLabelfromFileButton.Enable = 'on';
 app.MergeLabelsButton.Enable = 'on';
 
-% Enabling Normalization Labels tab
-app.MetadataLabelDropDown.Enable = 'on';
-app.SubClassDropDown.Enable = 'on';
-app.ViewNormalizedButton.Enable = 'on';
-
 % Enabling compartment segmentation check button
 app.GenerateCompartmentSegmentationCheckButton.Enable = 'on';
 
 % Enabling Pause Visualization checkbox
 app.PauseVisualizationCheckBox.Enable = 'on';
+
+% Slide-level summary button
+app.GenerateSlideLevelFeatureSummarySheetButton.Enable = 'on';

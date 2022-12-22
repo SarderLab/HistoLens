@@ -15,14 +15,9 @@ scale_width = 5;
 [rows, cols, ~] = size(img);
 
 % Text location
-text_loc = [rows-15-scale_width,cols-15-(scale_length/2)];
-if isempty(app.Scalebar_Options)
-    app.Scalebar_Options.FontSize = 10;
-    app.Scalebar_Options.Color = [1,1,1];
-end
+text_loc = [rows-25-scale_width,cols-15-(scale_length/2)];
 
-
-app.scale_text = text(img_axis,text_loc(2),text_loc(1),text_text,'FontSize',app.Scalebar_Options.FontSize,...
-    'FontWeight','bold','Color',app.Scalebar_Options.Color,'HorizontalAlignment','center');
+app.scale_text = text(img_axis,text_loc(2),text_loc(1),text_text,'FontSize',15,...
+    'FontWeight','bold','Color','w','HorizontalAlignment','center');
 
 

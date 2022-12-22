@@ -13,15 +13,8 @@ end
 
 % Setting image locations to white
 scaled_img = img;
-if isempty(app.Scalebar_Options)
-    scale_width = 10;
-    scaled_img(rows-10-scale_width:rows-10, cols-10-scale_length:cols-10,:) = 255;
-elseif app.Scalebar_Options.Color==[1,1,1]
-    scale_width = app.Scalebar_Options.FontSize;
-    scaled_img(rows-10-scale_width:rows-10, cols-10-scale_length:cols-10,:) = 255;
-elseif app.Scalebar_Options.Color==[0,0,0]
-    scale_width = app.Scalebar_Options.FontSize;
-    scaled_img(rows-10-scale_width:rows-10, cols-10-scale_length:cols-10,:) = 0;
-end
+scale_width = 5;
+scaled_img(rows-10-scale_width:rows-10, cols-10-scale_length:cols-10,:) = 255;
+
 
 
