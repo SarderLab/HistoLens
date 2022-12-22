@@ -9,37 +9,37 @@ butt_idx = find(strcmp(selectedButton.Text,string_vals));
 structure = app.SelectStructureDropDown.Value;
 if butt_idx==1
     
-    app.Seg_Params.(structure).Colorspace = app.ColorSpaceDropDown.Value;
+    app.Seg_Params.Colorspace = app.ColorSpaceDropDown.Value;
     channel = app.ColorChannelDropDown.Value;
     channel = strsplit(channel,' ');
     channel = channel{end};
     channel = str2num(channel);
-    app.Seg_Params.(structure).Luminal.Channel = channel;
-    app.Seg_Params.(structure).Luminal.Threshold = app.ThresholdValueEditField.Value;
-    app.Seg_Params.(structure).Luminal.MinSize = app.MinimumSizeEditField.Value;
-    app.Seg_Params.(structure).Luminal.Splitting = 0;
-    app.Seg_Params.(structure).Luminal.Order = app.SegmentationHierarchyLevelEditField.Value;
+    app.Seg_Params.Luminal.Channel = channel;
+    app.Seg_Params.Luminal.Threshold = app.ThresholdValueEditField.Value;
+    app.Seg_Params.Luminal.MinSize = app.MinimumSizeEditField.Value;
+    app.Seg_Params.Luminal.Splitting = 0;
+    app.Seg_Params.Luminal.Order = app.SegmentationHierarchyLevelEditField.Value;
     
     channel = app.ColorChannelDropDown_2.Value;
     channel = strsplit(channel,' ');
     channel = channel{end};
     channel = str2num(channel);
-    app.Seg_Params.(structure).PAS.Channel = channel;
-    app.Seg_Params.(structure).PAS.Threshold = app.ThresholdValueEditField_2.Value;
-    app.Seg_Params.(structure).PAS.MinSize = app.MinimumSizeEditField_2.Value;
-    app.Seg_Params.(structure).PAS.Splitting = 0;
-    app.Seg_Params.(structure).PAS.Order = app.SegmentationHierarchyLevelEditField_2.Value;
+    app.Seg_Params.PAS.Channel = channel;
+    app.Seg_Params.PAS.Threshold = app.ThresholdValueEditField_2.Value;
+    app.Seg_Params.PAS.MinSize = app.MinimumSizeEditField_2.Value;
+    app.Seg_Params.PAS.Splitting = 0;
+    app.Seg_Params.PAS.Order = app.SegmentationHierarchyLevelEditField_2.Value;
     
     channel = app.ColorChannelDropDown_3.Value;
     channel = strsplit(channel,' ');
     channel = channel{end};
     channel = str2num(channel);
     
-    app.Seg_Params.(structure).Nuclei.Channel = channel;
-    app.Seg_Params.(structure).Nuclei.Threshold = app.ThresholdValueEditField_3.Value;
-    app.Seg_Params.(structure).Nuclei.MinSize = app.MinimumSizeEditField_3.Value;
-    app.Seg_Params.(structure).Nuclei.Splitting = app.SplittingSlider.Value;
-    app.Seg_Params.(structure).Nuclei.Order = app.SegmentationHierarchyLevelEditField_3.Value;
+    app.Seg_Params.Nuclei.Channel = channel;
+    app.Seg_Params.Nuclei.Threshold = app.ThresholdValueEditField_3.Value;
+    app.Seg_Params.Nuclei.MinSize = app.MinimumSizeEditField_3.Value;
+    app.Seg_Params.Nuclei.Splitting = app.SplittingSlider.Value;
+    app.Seg_Params.Nuclei.Order = app.SegmentationHierarchyLevelEditField_3.Value;
     
 end
 
@@ -50,40 +50,40 @@ if butt_idx == 2
     stain_code = stain_code{end};
     stain_code = strrep(stain_code,')','');
     
-    app.Seg_Params.(structure).Stain = stain_code;
+    app.Seg_Params.Stain = stain_code;
     
     channel_code = app.StainChannelDropDown.Value;
     channel_code = strsplit(channel_code,' ');
     channel_code = channel_code{end};
     channel_code = str2num(channel_code);
     
-    app.Seg_Params.(structure).Luminal.Channel = channel_code;
-    app.Seg_Params.(structure).Luminal.Threshold = app.ThresholdValueEditField_4.Value;
-    app.Seg_Params.(structure).Luminal.MinSize = app.MinimumSizeEditField_4.Value;
-    app.Seg_Params.(structure).Luminal.Splitting = 0;
-    app.Seg_Params.(structure).Luminal.Order = app.SegmentationHierarchyLevelEditField_4.Value;
+    app.Seg_Params.Luminal.Channel = channel_code;
+    app.Seg_Params.Luminal.Threshold = app.ThresholdValueEditField_4.Value;
+    app.Seg_Params.Luminal.MinSize = app.MinimumSizeEditField_4.Value;
+    app.Seg_Params.Luminal.Splitting = 0;
+    app.Seg_Params.Luminal.Order = app.SegmentationHierarchyLevelEditField_4.Value;
     
     channel_code = app.StainChannelDropDown_2.Value;
     channel_code = strsplit(channel_code,' ');
     channel_code = channel_code{end};
     channel_code = str2num(channel_code);
     
-    app.Seg_Params.(structure).PAS.Channel = channel_code;
-    app.Seg_Params.(structure).PAS.Threshold = app.ThresholdValueEditField_5.Value;
-    app.Seg_Params.(structure).PAS.MinSize = app.MinimumSizeEditField_5.Value;
-    app.Seg_Params.(structure).PAS.Splitting = 0;
-    app.Seg_Params.(structure).PAS.Order = app.SegmentationHierarchyLevelEditField_5.Value;
+    app.Seg_Params.PAS.Channel = channel_code;
+    app.Seg_Params.PAS.Threshold = app.ThresholdValueEditField_5.Value;
+    app.Seg_Params.PAS.MinSize = app.MinimumSizeEditField_5.Value;
+    app.Seg_Params.PAS.Splitting = 0;
+    app.Seg_Params.PAS.Order = app.SegmentationHierarchyLevelEditField_5.Value;
     
     channel_code = app.StainChannelDropDown_3.Value;
     channel_code = strsplit(channel_code,' ');
     channel_code = channel_code{end};
     channel_code = str2num(channel_code);
     
-    app.Seg_Params.(structure).Nuclei.Channel = channel_code;
-    app.Seg_Params.(structure).Nuclei.Threshold = app.ThresholdValueEditField_6.Value;
-    app.Seg_Params.(structure).Nuclei.MinSize = app.MinimumSizeEditField_6.Value;
-    app.Seg_Params.(structure).Nuclei.Splitting = app.SplittingSlider_2.Value;
-    app.Seg_Params.(structure).Nuclei.Order = app.SegmentationHierarchyLevelEditField_6.Value;
+    app.Seg_Params.Nuclei.Channel = channel_code;
+    app.Seg_Params.Nuclei.Threshold = app.ThresholdValueEditField_6.Value;
+    app.Seg_Params.Nuclei.MinSize = app.MinimumSizeEditField_6.Value;
+    app.Seg_Params.Nuclei.Splitting = app.SplittingSlider_2.Value;
+    app.Seg_Params.Nuclei.Order = app.SegmentationHierarchyLevelEditField_6.Value;
     
 end
 

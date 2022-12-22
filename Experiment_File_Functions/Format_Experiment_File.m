@@ -46,8 +46,6 @@ for i = 1:length(structures)
 end
 
 % Writing Experiment_Struct to an .xml file
-%struct2xml(Experiment_Struct,strcat(experiment_name,'_HistoLens_Experiment_File.xml'))
-%main_app.Experiment_File = strcat(experiment_name,'_HistoLens_Experiment_File.xml');
 display(strcat('Saving experiment file to:',strcat(app.Slide_Path,filesep,app.Experiment_File),'.xml'))
 struct2xml(Experiment_Struct,strcat(app.Slide_Path,filesep,app.Experiment_File,'.xml'))
 main_app.Experiment_File = strcat(app.Slide_Path,filesep,app.Experiment_File,'.xml');

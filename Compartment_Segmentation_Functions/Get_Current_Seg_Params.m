@@ -1,18 +1,14 @@
 % --- Function to get structure segmentation parameters and display in
 % compartment segmentation window
-function Get_Current_Seg_Params(app)
-
-% Current structure
-current_structure = app.SelectStructureDropDown.Value;
-current_slide = app.Slide_Idx.(current_structure);
+function Get_Current_Seg_Params(app,current_slide)
 
 slide_idx_name = strcat('Slide_Idx_',num2str(current_slide));
 
-if ismember(slide_idx_name,fieldnames(app.Final_Seg_Params.(current_structure)))
+if ismember(slide_idx_name,fieldnames(app.Final_Seg_Params))
     display('Loading segmentation parameters from previous run-through')
-    seg_params = app.Final_Seg_Params.(current_structure).(slide_idx_name).CompartmentSegmentation;
+    seg_params = app.Final_Seg_Params.(slide_idx_name).CompartmentSegmentation;
     
-    app.Seg_Params.(current_structure) = seg_params;
+    app.Seg_Params = seg_params;
     
     if ismember('Colorspace',fieldnames(seg_params))
         app.ColorspaceParametersPanel.Visible = 'on';
@@ -98,7 +94,7 @@ if ismember(slide_idx_name,fieldnames(app.Final_Seg_Params.(current_structure)))
 
 else
     display('Using current segmentation parameters from previous slide')
-    if ismember('Path',fieldnames(app.Seg_Params.(current_structure)))
+    if ismember('Path',fieldnames(app.Seg_Params))
         display('Just kidding using Colorspace')
         app.FoldernameLabel.Text = 'Folder name';
         

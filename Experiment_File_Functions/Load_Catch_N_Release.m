@@ -101,7 +101,6 @@ for st = 1:length(structure_list)
         end
     end
     if any(ismember(fieldnames(exp_struct.(experiment_name).Structure.(structure_name)),'FeatureSet'))
-
         structure_info.(structure_name).FeatureSet = exp_struct.(experiment_name).Structure.(structure_name).FeatureSet.Text;
     else
         [file,path] = uigetfile('*','Select Feature Set file');

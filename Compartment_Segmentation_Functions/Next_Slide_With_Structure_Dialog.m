@@ -1,0 +1,26 @@
+% --- Function containing dialog box for whether or not to continue if
+% pressing done before going through each slide in compartment segmentation
+% procedure
+function go_for_it = Next_Slide_With_Structure_Dialog
+    go_for_it = false;
+
+    d = dialog("Name","Go to next slide with structure",...
+        "Icon","Logo.png",...
+        'Position',[300 300 250 150]);
+    txt = uicontrol('Parent',d,...
+        'Style','text',...
+        'Position',[20 80 210 40],...
+        'String','The current slide does not have any of this structure.\n Go to the next slide with this structure?\n Close to return');
+
+    ok_btn = uicontrol('Parent',d,...
+        'Position',[75 70 100 25],...
+        'String', 'OK',...
+        'Callback',@update_goforit);
+
+    uiwait(d);
+
+    function update_goforit(d,event)
+        go_for_it = true;
+        delete(d)
+    end
+end

@@ -6,11 +6,8 @@ function Update_Normalization_Params(app)
 od_img = reshape(double(app.Current_Img),[],3);
 od_img = -log((od_img+1)/240);
 
-% Current structure StainNorm_Params
-current_structure = app.SelectStructureDropDown.Value;
-
-if ~isempty(app.StainNorm_Params) && ismember(current_structure,fieldnames(app.StainNorm_Params))
-    norm_params = app.StainNorm_Params.(current_structure);
+if ~isempty(app.StainNorm_Params)
+    norm_params = app.StainNorm_Params;
 else
     norm_params = [];
 end
@@ -55,6 +52,9 @@ if ~isempty(app.Current_ROIs.H_ROIs)
         
         end
     end
+else
+    norm_params.Means(:,1) = zeros(3,1);
+    norm_params.Maxs(:,1) = zeros(3,1);
 end
 
 if ~isempty(app.Current_ROIs.P_ROIs)
@@ -96,14 +96,15 @@ if ~isempty(app.Current_ROIs.P_ROIs)
             
         end
     end
+else
+    norm_params.Means(:,2) = zeros(3,1);
+    norm_params.Maxs(:,2) = zeros(3,1);
 end
 
 app.MeanTable.Data = norm_params.Means;
 app.MaxTable.Data = norm_params.Maxs;
 
-app.StainNorm_Params.(current_structure).Means = norm_params.Means;
-app.StainNorm_Params.(current_structure).Maxs = norm_params.Maxs;
+app.StainNorm_Params.Means = norm_params.Means;
+app.StainNorm_Params.Maxs = norm_params.Maxs;
 
-app.Current_ROIs.H_ROIs = [];
-app.Current_ROIs.P_ROIs = [];
 

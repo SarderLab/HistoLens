@@ -21,4 +21,7 @@ switch(event_type)
         app.Current_ROIs.(strcat(stain,'_ROIs'))(roi_idx,:) = src.Position;
 
 end
+% Updating normalization values from selected regions
+Update_Normalization_Params(app)
+
 

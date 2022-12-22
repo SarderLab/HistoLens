@@ -54,55 +54,60 @@ for s = 1:length(slide_names)
     
     current_path = strcat(slide_path,filesep,file_name,'.xml');
     read_xml = xmlread(current_path);
-    
-    % Extract MPP from XML
-    
+        
     annotations = read_xml.getElementsByTagName('Annotation');
 
     % Uncomment this try-catch to account for any slides with 0 structures
     % annotated
+    mpp = read_xml.getElementsByTagName('Annotations');
+    mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
+
+    % When annotations are the result of network predictions, the MPP is
+    % not written to the xml file
+    if ~isnan(mpp)
+        app.MPP = mpp;
+    else
+        mpp = 0.2253;
+        app.MPP = mpp;
+    end
+
+    slide_filepath = strcat(slide_path,filesep,slide,'.svs');
+
+    % Unique structure identifier
+    slide_id = slide;
+    structure_ID = slide_id;
+    
+    % Fix for multiple structure idxes for a single structure
+    reg_count = 1;
+    for st = 1:length(structure_idx)
+        structure_regions = annotations.item(structure_idx(st)-1);
+        if ~isempty(structure_regions)
+            regions = structure_regions.getElementsByTagName('Region');
+    
+            % Creating an array of all regions in the slide for more efficient
+            % parallel processing
+            for p = 0:regions.getLength-1
+                reg_array(reg_count) = regions.item(p);
+                reg_count = reg_count+1;
+            end
+        end
+    end
+        
+    % Slide-level progress bar
+    ph.XData = [0 ((s-1)/length(slide_names)) ((s-1)/length(slide_names)) 0];
+    th.String = sprintf('%.0f%%',round(100*((s-1)/length(slide_names))));
+    th.Position = [1 1 0];
+    drawnow
+
+    % Parallel for-loops only really worthwhile if you have >4 cores to
+    % work with
+    % Need to change up input into Comp_Seg_Gen to facilitate
+    % parallelization, it doesn't like being passed 'app' as an argument.
+    % So just need to extract the segmentation parameters before that
+    seg_params = app.Seg_Params;
     try
-        structure_regions = annotations.item(structure_idx-1);
-        %if ~isempty(structure_regions)
-        regions = structure_regions.getElementsByTagName('Region');
-    
-        mpp = read_xml.getElementsByTagName('Annotations');
-        mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
-    
-        % When annotations are the result of network predictions, the MPP is
-        % not written to the xml file
-        if ~isnan(mpp)
-            app.MPP = mpp;
-        else
-            mpp = 0.2253;
-            app.MPP = mpp;
-        end
-    
-        slide_filepath = strcat(slide_path,filesep,slide,'.svs');
-    
-        % Unique structure identifier
-        slide_id = slide;
-        structure_ID = slide_id;
-    
-        % Creating an array of all regions in the slide for more efficient
-        % parallel processing
-        for p = 0:regions.getLength-1
-            reg_array(p+1) = regions.item(p);
-        end
-    
-        % Slide-level progress bar
-        ph.XData = [0 ((s-1)/length(slide_names)) ((s-1)/length(slide_names)) 0];
-        th.String = sprintf('%.0f%%',round(100*((s-1)/length(slide_names))));
-        th.Position = [1 1 0];
-        drawnow
-    
-        % Parallel for-loops only really worthwhile if you have >4 cores to
-        % work with
-        % Need to change up input into Comp_Seg_Gen to facilitate
-        % parallelization, it doesn't like being passed 'app' as an argument.
-        % So just need to extract the segmentation parameters before that
-        %parfor r = 1:length(reg_array)
-        for r = 1:length(reg_array)
+        parfor r = 1:length(reg_array)
+        %for r = 1:length(reg_array)
         
             reg = reg_array(r);
             verts = reg.getElementsByTagName('Vertex');
@@ -123,17 +128,17 @@ for s = 1:length(slide_names)
             mask = poly2mask(mask_coords(:,1),mask_coords(:,2),size(raw_img,1),size(raw_img,2));
     
             % Stain normalization
-            img = normalizeStaining(raw_img,240,0.15,1,app.Seg_Params.(structure_name).StainNormalization.Means,...
-                app.Seg_Params.(structure_name).StainNormalization.Maxs);
+            if ismember('StainNormalization',fieldnames(seg_params))
+                img = normalizeStaining(raw_img,240,0.15,1,seg_params.StainNormalization.Means,...
+                    seg_params.StainNormalization.Maxs);
+            else
+                img = raw_img;
+            end
             
-            if ismember('Path',fieldnames(app.Seg_Params.(structure_name).(slide_idx_name).CompartmentSegmentation))
+            if ismember('Path',fieldnames(seg_params.(slide_idx_name).CompartmentSegmentation))
                 mask = strcat(slide,'_',num2str(r));
             end
-            comp_img = Comp_Seg_Gen(app.Seg_Params.(structure_name).(slide_idx_name).CompartmentSegmentation,img,mask);
-    
-            % Adding mean and max OD values for that slide to the
-            % Slide_NormVals property of the main app
-            Get_OD_vals(raw_img,comp_img,s,app)
+            comp_img = Comp_Seg_Gen(seg_params.(slide_idx_name).CompartmentSegmentation,img,mask);
     
             % Extracting feature row (corresponding to specific structure
             feat_row_combined = Features_Extract_General(img,comp_img,feature_indices,mpp);
@@ -146,25 +151,10 @@ for s = 1:length(slide_names)
         end
         app.UITable.Data = [app.UITable.Data;{slide_id,num2str(regions.getLength)}];
         cell2csv(feat_filename,feature_set);
-    
-        % Aggregating the stain normalization values for each structure
-        app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).SlideName = slide_id;
-        if length(size(app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).Means))==3
-            app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).Means = mean(app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).Means,3,'omitnan');
-            app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).Maxs = mean(app.Slide_NormVals.(strcat('Slide_Idx_',num2str(s))).Maxs,3,'omitnan');
-        end
-       
+        
+        
         clear reg_array
-
-    catch
-    %else
-        % Slide-level progress bar
-        ph.XData = [0 ((s-1)/length(slide_names)) ((s-1)/length(slide_names)) 0];
-        th.String = sprintf('%.0f%%',round(100*((s-1)/length(slide_names))));
-        th.Position = [1 1 0];
-        drawnow
     end
-
 end
 
 % Slide-level progress bar
@@ -176,8 +166,4 @@ drawnow
 % Writing the features to the feature set file (get feature names)
 cell2csv(feat_filename,feature_set);
 app.Full_Feature_set.(structure_name) = readtable(feat_filename,'ReadVariableNames',true,'VariableNamingRule','preserve','Delimiter',',');
-
-% Writing the slide stain normalization parameters to the experiment file
-Slide_Norm_to_Experiment_File(app)
-
 
