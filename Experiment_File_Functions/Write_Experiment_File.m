@@ -34,10 +34,18 @@ if ismember('StainNormalization',fieldnames(app.Seg_Params))
 end
 
 % Storing structure-level information
-structures = fieldnames(app.Structure_Names);
+%structures = fieldnames(app.Structure_Names);
+structures = app.Structure_Names{:,1};
 for i = 1:length(structures)
     structure = structures{i};
-    Experiment_Struct.Structure.(structure).AnnotationID = app.Structure_Names.(structure).Annotation_ID;
+    structure_idx_name = strcat('Structure_',num2str(i));
+    
+    % Finding the row with this structure name
+    structure_row = find(strcmp(structure,app.Structure_Names{:,1}));
+    annotation_ids = app.Structure_Names{structure_row,2};
+
+    Experiment_Struct.Structure.(structure_idx_name).AnnotationID = annotation_ids;
+    Experiment_Struct.Structure.(structure_idx_name).Structure_Name = structure;
 end
 
 % Recording slide-level compartment segmentation procedures
