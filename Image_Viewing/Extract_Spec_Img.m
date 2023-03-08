@@ -18,81 +18,80 @@ img_id = name_parts{end};
 img_id = strsplit(img_id,'.');
 img_id = str2double(img_id{1});
 
+% Getting the annotation ids
+structure_row = find(strcmp(app.Structure,app.Structure_Names(:,1)));
+annotation_ids = app.Structure_Names{structure_row,2};
+annotation_ids = str2double(strsplit(annotation_ids,','));
+
 % Getting contents of slide path
 dir_contents = dir(app.Slide_Path);
 dir_contents = dir_contents(~ismember({dir_contents.name},{'.','..'}));
-dir_contents = dir_contents(~contains({dir_contents.name},{'.xml','.csv'}));
-dir_contents = dir_contents(contains({dir_contents.name},'.svs'));
+dir_contents = dir_contents(~contains({dir_contents.name},{'.xml','.json','.geojson','.csv'}));
+dir_contents = dir_contents(contains({dir_contents.name},app.WSI_Formats));
 dir_contents = {dir_contents.name};
 
-if any(contains(dir_contents,'.'))
-    dir_contents = cellfun(@(x) strsplit(x,'.'),dir_contents,'UniformOutput',false);
-    dir_contents = cellfun(@(x) x{1},dir_contents,'UniformOutput',false);
+% Removing WSI extension from dir contents and finding slide_name
+split_names = cellfun(@(x) strsplit(x,'.'),dir_contents,'UniformOutput',false);
+wsi_exts = cellfun(@(x) x{end}, split_names, 'UniformOutput',false);
+
+compare_names = {};
+for i = 1:length(split_names)
+    split_names{i}
+    if length(split_names{i})>2
+        compare_names(i) = strjoin(split_names{i}{1:end-1},'.');
+    else
+        compare_names(i) = split_names{i}(1);
+    end
 end
+
 
 % Finding slide that contains that slide name (should grab it even without
 % specifying the file type
-slide_idx = find(contains(dir_contents,slide_name));
+slide_idx = find(strcmp(compare_names,slide_name));
 slide_idx_name = strcat('Slide_Idx_',num2str(slide_idx));
 if ~isempty(slide_idx)
     slide_path = strcat(app.Slide_Path,filesep,dir_contents{slide_idx});
-    xml_path = strsplit(slide_path,'.');
-    xml_path = strcat(xml_path{1},'.xml');
     
-    read_xml = xmlread(xml_path);
-    annotations = read_xml.getElementsByTagName('Annotation');
-    
-    mpp = read_xml.getElementsByTagName('Annotations');
-    mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
-    
-    if ~isnan(mpp)
-        app.MPP = mpp;
+    if contains(slide_path,'.')
+        ann_path = strsplit(slide_path,'.');
+        wsi_ext = ann_path{end};
+        if length(ann_path)>2
+            ann_path = strjoin(ann_path(1:end-1),'.');
+        else
+            ann_path = ann_path{1};
+        end
     end
+
+    if strcmp(app.Annotation_Format,'XML')
+        ann_path = strcat(ann_path,'.xml');
+        [bbox_coords,mask_coords] = Read_XML_Annotations(ann_path,annotation_ids,img_id);
     
-    % Adjustments for if multiple annotation IDs are combined into a single
-    % structure (See Compartment_Segmentation_Functions/Extract_Rand_Img.m
-    % Lines 23-67 for more complete description)
-    structure_id = app.structure_idx.(app.Structure);
-    if length(structure_id)>1
-        structure_regions = cell(1);
-        n_structures = zeros(1);
-        for s = 1:length(structure_id)
-            structure_regions = [structure_regions;{annotations.item(structure_id(s)-1)}];
-            n_structures(s) = annotations.item(structure_id(s)-1).getLength;
+    elseif strcmp(app.Annotation_Format,'JSON')
+        if isfile(strcat(ann_path,'.json'))
+            json_path = strcat(ann_path,'.json');
+        else
+            json_path = strcat(ann_path,'.geojson');
         end
-        structure_regions = structure_regions(2:end);
-        pre_search_num = img_id;
-        ann_count = 0;
-        while pre_search_num>0 && ann_count<=length(n_structures)
-            ann_count = ann_count+1;
-            current_sr = n_structures(ann_count);
-            pre_search_num = pre_search_num-current_sr;
-        end
-        img_id = pre_search_num+n_structures(ann_count)-1;
-        regions = structure_regions{ann_count}.getElementsByTagName('Region');
+        [bbox_coords,mask_coords] = Read_JSON_Annotations(json_path,img_id);
+    end
+
+    if strcmp(wsi_ext,'svs')
+        raw_I = imread(slide_path,'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
     else
-        structure_regions = annotations.item(structure_id-1);
-        regions = structure_regions.getElementsByTagName('Region');
-        img_id = img_id-1;
+        % Reading image with openslide
+        min_x = bbox_coords(1);
+        min_y = bbox_coords(3);
+        range_x = bbox_coords(2)-bbox_coords(1);
+        range_y = bbox_coords(4)-bbox_coords(3);
+
+        slide_pointer = openslide_open(slide_path);
+
+        raw_I = openslide_read_region(slide_pointer,min_x,min_y,range_x,range_y);
+        raw_I = raw_I(2:end,:,:);
+
+        openslide_close(slide_pointer)
     end
-    
-    % Pulling out specific region
-    reg = regions.item(img_id);
-    verts = reg.getElementsByTagName('Vertex');
-    xy = zeros(verts.getLength-1,2);
-    for vi = 0:verts.getLength-1
-        x = str2double(verts.item(vi).getAttribute('X'));
-        y = str2double(verts.item(vi).getAttribute('Y'));
-    
-        xy(vi+1,:) = [x,y];
-    end
-    
-    bbox_coords = [min(xy(:,1))-100,max(xy(:,1))+100,min(xy(:,2))-100,max(xy(:,2))+100];
-    % creating mask
-    mask_coords(:,1) = xy(:,1)-bbox_coords(1);
-    mask_coords(:,2) = xy(:,2)-bbox_coords(3);
-    
-    raw_I = imread(strcat(slide_path,'.svs'),'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
+
     mask = poly2mask(mask_coords(:,1),mask_coords(:,2),size(raw_I,1),size(raw_I,2));
     
     if ismember('StainNormalization',fieldnames(app.Seg_Params))

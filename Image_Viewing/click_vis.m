@@ -6,9 +6,9 @@ axes(app.Rel_Ax);
 app.min_feat_rank = app.Rank_Slide.Value;
 
 if length(app.map_idx)==1
-    plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
+    plot_idx = find(app.Overlap_Feature_idx.(app.Structure_Idx_Name)==app.map_idx);
 else
-    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
+    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure_Idx_Name),app.map_idx));
 end
 
 if ~app.Comparing || strcmp(app.Image_Name_Label.Visible,'on')
@@ -108,9 +108,9 @@ if ~app.Comparing || strcmp(app.Image_Name_Label.Visible,'on')
 
         % Accounting for the case that the full feature set isn't provided
         %if ~isempty(app.Full_Feature_set)
-        title(app.Rel_Ax,['Histogram of:',app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx),'around clicked region'])
+        title(app.Rel_Ax,['Histogram of:',app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames(plot_idx),'around clicked region'])
         if ~isempty(app.weighted_encodings)
-            feature = app.Full_Feature_set.(app.Structure).Properties.VariableNames{plot_idx};
+            feature = app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames{plot_idx};
             rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
             subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
         end
@@ -301,10 +301,10 @@ else
 
         % Accounting for the case that the full feature set isn't provided
         %if ~isempty(app.Full_Feature_set)
-        title(app.Rel_Ax,strcat('Histogram of ', app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx),' around clicked region'))
+        title(app.Rel_Ax,strcat('Histogram of ', app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames(plot_idx),' around clicked region'))
         
         if ~isempty(app.weighted_encodings)
-            feature = app.Full_Feature_set.(app.Structure).Properties.VariableNames{plot_idx};
+            feature = app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames{plot_idx};
             rank = find(strcmp(app.weighted_encodings.Feature_Names,feature));
             subtitle(app.Rel_Ax,strcat('Feature Rank: ',string(rank)))
         end
