@@ -2,24 +2,24 @@
 function Plot_Scatter(app)
 
 rm_out = app.rem_out;
-plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
+plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure_Idx_Name),app.map_idx));
 event = [];
 
 cla(app.Dist_Ax,'reset')
 
 if ~app.Combine_Label
     %% Dimensional reductions for multiple features
-    feat_names = app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx);
+    feat_names = app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames(plot_idx);
     axis_titles = app.feature_encodings.Feature_Names(app.map_idx);
     
     % Combining data for all included feature values
-    data = app.Full_Feature_set.(app.Structure)(:,strcmp(app.Full_Feature_set.(app.Structure).Properties.VariableNames,feat_names{1}));
+    data = app.Full_Feature_set.(app.Structure_Idx_Name)(:,strcmp(app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames,feat_names{1}));
     for j = 2:length(plot_idx)
-        data = horzcat(data,app.Full_Feature_set.(app.Structure)(:,strcmp(app.Full_Feature_set.(app.Structure).Properties.VariableNames,feat_names{j})));
+        data = horzcat(data,app.Full_Feature_set.(app.Structure_Idx_Name)(:,strcmp(app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames,feat_names{j})));
     end
     
     % Combining data with image labels and treatment/class label
-    data = horzcat(data,app.Full_Feature_set.(app.Structure)(:,end-1),app.Full_Feature_set.(app.Structure)(:,end));
+    data = horzcat(data,app.Full_Feature_set.(app.Structure_Idx_Name)(:,end-1),app.Full_Feature_set.(app.Structure_Idx_Name)(:,end));
     
     data_ind = Subset_Data(app,event);
     

@@ -1,22 +1,22 @@
 % --- Function for plotting Violinplot
 function Plot_Violin(app)
 
-plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
+plot_idx = find(app.Overlap_Feature_idx.(app.Structure_Idx_Name)==app.map_idx);
 rm_out = app.rem_out;
 
 event = [];
 cla(app.Dist_Ax,'reset')
 
 % Feature values
-feat_name = app.Full_Feature_set.(app.Structure).Properties.VariableNames{plot_idx};
+feat_name = app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames{plot_idx};
 
 if ~app.Combine_Label
     try
-        data = horzcat(num2cell(app.Full_Feature_set.(app.Structure).(feat_name)),num2cell(app.Full_Feature_set.(app.Structure).ImgLabel),...
-            num2cell(app.Full_Feature_set.(app.Structure).Class));
+        data = horzcat(num2cell(app.Full_Feature_set.(app.Structure_Idx_Name).(feat_name)),num2cell(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel),...
+            num2cell(app.Full_Feature_set.(app.Structure_Idx_Name).Class));
     catch
-        data = horzcat(num2cell(app.Full_Feature_set.(app.Structure).(feat_name)),app.Full_Feature_set.(app.Structure).ImgLabel,...
-            app.Full_Feature_set.(app.Structure).Class);
+        data = horzcat(num2cell(app.Full_Feature_set.(app.Structure_Idx_Name).(feat_name)),app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,...
+            app.Full_Feature_set.(app.Structure_Idx_Name).Class);
     end
     
     data = cell2table(data,'VariableNames',{feat_name, 'ImgLabel','Class'});

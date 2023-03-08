@@ -1,25 +1,29 @@
 % --- Function to subset data based on checked boxes 
 function data_ind = Subset_Data(app,event)
 
-data_ind = ones(height(app.Full_Feature_set.(app.Structure)),1);
+data_ind = ones(height(app.Full_Feature_set.(app.Structure_Idx_Name)),1);
 
 if ~isempty(app.Subset_Master)
-    if ~isempty(app.Subset_Master.(app.Structure))
+    if ~isempty(app.Subset_Master.(app.Structure_Idx_Name))
         app.Plot_Options = [];
         % Parent nodes in app.Subset_Master
-        parent_nodes = {app.Subset_Master.(app.Structure).Parent};
+        parent_nodes = {app.Subset_Master.(app.Structure_Idx_Name).Parent};
         parent_nodes = cellfun(@(x) x.Text,parent_nodes,'UniformOutput',false);
         
-        for j = 1:length(app.Subset_Master.(app.Structure))
-            remove_label = app.Subset_Master.(app.Structure)(j).Text;
-            label_idx = find(strcmp(parent_nodes{j},app.Aligned_Labels.(app.Structure).AllLabels));
-            ind_labels = app.Aligned_Labels.(app.Structure).(strcat('Label_',num2str(label_idx))).Aligned;
+        for j = 1:length(app.Subset_Master.(app.Structure_Idx_Name))
+            % Getting the text label to remove
+            remove_label = app.Subset_Master.(app.Structure_Idx_Name)(j).Text;
+            % Getting the index name of the parent label
+            label_idx = find(strcmp(parent_nodes{j},app.Aligned_Labels.(app.Structure_Idx_Name).AllLabels));
+            % Getting labels for each sample from label_idx name 
+            ind_labels = app.Aligned_Labels.(app.Structure_Idx_Name).(strcat('Label_',num2str(label_idx))).Aligned;
             % Finding overlap with existing ignored labels
-            [T,rows_in_T] = innerjoin(ind_labels,app.Ignore_idx.(app.Structure));
+            [T,rows_in_T] = innerjoin(ind_labels,app.Ignore_idx.(app.Structure_Idx_Name));
             [~,sortinds] = sort(rows_in_T);
             ign_labels = T(sortinds,:);
-    
-            [T,rows_in_T] = innerjoin(table(app.Full_Feature_set.(app.Structure).ImgLabel,'VariableName',{'ImgLabel'}),...
+            % Finding overlap with current labels in
+            % app.Full_Feature_set.(app.Structure_Idx_Name)
+            [T,rows_in_T] = innerjoin(table(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,'VariableName',{'ImgLabel'}),...
                 ign_labels);
             [~,sortinds] = sort(rows_in_T);
             ign_labels = T(sortinds,:);
@@ -45,6 +49,7 @@ if ~isempty(app.Subset_Master)
                 data_ind(find(ign_labels.Ignore)) = 0;
     
             else
+                
                 data_ind(find(ismember(ign_labels.Class,remove_label) | ign_labels.Ignore)) = 0;
     
             end            
@@ -53,8 +58,8 @@ if ~isempty(app.Subset_Master)
     
     else
     
-        data_labels = app.Full_Feature_set.(app.Structure).ImgLabel;
-        [data_aligned,rows_in_T] = innerjoin(app.Ignore_idx.(app.Structure),cell2table(data_labels,'VariableNames',{'ImgLabel'}));
+        data_labels = app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel;
+        [data_aligned,rows_in_T] = innerjoin(app.Ignore_idx.(app.Structure_Idx_Name),cell2table(data_labels,'VariableNames',{'ImgLabel'}));
         [~,sortinds] = sort(rows_in_T);
         
         class_data_ind = data_aligned(sortinds,:);
@@ -62,13 +67,14 @@ if ~isempty(app.Subset_Master)
         
     end
 else
-    data_labels = app.Full_Feature_set.(app.Structure).ImgLabel;
+    data_labels = app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel;
     
     
-    [data_aligned,rows_in_T] = innerjoin(app.Ignore_idx.(app.Structure),cell2table(data_labels,'VariableNames',{'ImgLabel'}));
+    [data_aligned,rows_in_T] = innerjoin(app.Ignore_idx.(app.Structure_Idx_Name),cell2table(data_labels,'VariableNames',{'ImgLabel'}));
     [~,sortinds] = sort(rows_in_T);
     
     class_data_ind = data_aligned(sortinds,:);
     data_ind(find(class_data_ind.Ignore)) = 0;
 
 end
+

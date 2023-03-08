@@ -6,7 +6,7 @@ img_names = image_paths;
 combined = cell(length(img_names),1);
 for i = 1:length(img_names)
     name = img_names{i};
-    label = app.Full_Feature_set.(app.Structure).Class(strcmp(app.Full_Feature_set.(app.Structure).ImgLabel,name));
+    label = app.Full_Feature_set.(app.Structure_Idx_Name).Class(strcmp(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,name));
     if iscell(label)
         label = label{1};
     end

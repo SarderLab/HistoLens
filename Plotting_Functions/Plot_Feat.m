@@ -21,30 +21,30 @@ if app.new_Persistent_label
 
         all_class = app.Plot_Options.LabelOrder;
         if ~isnumeric(all_class)
-            for j = 1:length(app.Persistent_Labels.(app.Structure))
+            for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
                 
-                label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                 if ~isempty(label_data)
                     text(app.Dist_Ax,find(strcmp(label_data{1,3},all_class)),...
-                        label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                        label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                         'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app)); 
                 end
             end
         else
-            for j = 1:length(app.Persistent_Labels.(app.Structure))
+            for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
                 
-                label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                 if ~isempty(label_data)
                     text(app.Dist_Ax,find(label_data{1,3}==all_class),...
-                        label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                        label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                         'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 end
             end
         end
     else
-        label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure)),1:2};
+        label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name)),1:2};
         for j = 1:height(label_vals)
-            text(app.Dist_Ax,label_vals(j,1),label_vals(j,2),strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+            text(app.Dist_Ax,label_vals(j,1),label_vals(j,2),strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                 'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
         end
     end
@@ -59,26 +59,26 @@ if app.New_Label
         
         Plot_Violin(app)
         % Adding persistent image labels to plot
-        if ~isempty(app.Persistent_Labels.(app.Structure))
+        if ~isempty(app.Persistent_Labels.(app.Structure_Idx_Name))
 
             all_class = app.Plot_Options.LabelOrder;
             if ~isnumeric(all_class)
-                for j = 1:length(app.Persistent_Labels.(app.Structure))
+                for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
 
-                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                     if ~isempty(label_data)
                         text(app.Dist_Ax,find(strcmp(label_data{1,3},all_class)),...
-                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                             'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));            
                     end
                 end
             else
-                for j = 1:length(app.Persistent_Labels.(app.Structure))
+                for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
                     
-                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                     if ~isempty(label_data)
                         text(app.Dist_Ax,find(label_data{1,3}==all_class),...
-                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                             'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                     end
                 end
@@ -89,12 +89,12 @@ if app.New_Label
 
         Plot_Scatter(app)
         % Adding persistent image labels to plot
-        if ~isempty(app.Persistent_Labels.(app.Structure))
-            label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure)),1:2};
+        if ~isempty(app.Persistent_Labels.(app.Structure_Idx_Name))
+            label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name)),1:2};
 
             for j = 1:height(label_vals)
                 text(app.Dist_Ax,label_vals(j,1),label_vals(j,2),...
-                    strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                    strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                     'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));             
             end
         end
@@ -111,26 +111,26 @@ if ~app.new_Persistent_label && ~app.New_Label
     if length(app.map_idx)==1
         Plot_Violin(app)
         % Adding persistent image labels to plot
-        if ~isempty(app.Persistent_Labels.(app.Structure))
+        if ~isempty(app.Persistent_Labels.(app.Structure_Idx_Name))
 
             all_class = app.Plot_Options.LabelOrder;
             if ~isnumeric(all_class)
-                for j = 1:length(app.Persistent_Labels.(app.Structure))
+                for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
                     
-                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                     if ~isempty(label_data)
                         text(app.Dist_Ax,find(strcmp(label_data{1,3},all_class)),...
-                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                             'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));      
                     end
                 end
             else
-                for j = 1:length(app.Persistent_Labels.(app.Structure))
+                for j = 1:length(app.Persistent_Labels.(app.Structure_Idx_Name))
                     
-                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure){j}),:);
+                    label_data = app.Dist_Data(strcmp(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name){j}),:);
                     if ~isempty(label_data)
                         text(app.Dist_Ax,find(label_data{1,3}==all_class),...
-                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                            label_data{1,1},strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                             'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                     end
                 end
@@ -142,12 +142,12 @@ if ~app.new_Persistent_label && ~app.New_Label
         Plot_Scatter(app)
         
         % Adding persistent image labels to plot
-        if ~isempty(app.Persistent_Labels.(app.Structure))
-            label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure)),1:2};
+        if ~isempty(app.Persistent_Labels.(app.Structure_Idx_Name))
+            label_vals = app.Dist_Data{ismember(app.Dist_Data.ImgLabel,app.Persistent_Labels.(app.Structure_Idx_Name)),1:2};
 
             for j = 1:height(label_vals)
                 text(app.Dist_Ax,label_vals(j,1),label_vals(j,2),...
-                    strcat('\leftarrow',app.Persistent_Labels.(app.Structure){j}),...
+                    strcat('\leftarrow',app.Persistent_Labels.(app.Structure_Idx_Name){j}),...
                     'ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));             
             end
         end

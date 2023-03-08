@@ -25,7 +25,7 @@ if strcmp(label_type,'Numeric')
         app.Dist_Data.Class = [];
         
         app.Dist_Data = innerjoin(app.Dist_Data,...
-            app.Full_Feature_set.(app.Structure)(:,ismember(app.Full_Feature_set.(app.Structure).Properties.VariableNames,...
+            app.Full_Feature_set.(app.Structure_Idx_Name)(:,ismember(app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames,...
             {'ImgLabel','Class'})));
         
         app.New_Label = true;
@@ -106,7 +106,7 @@ if strcmp(label_type,'Categorical')
         app.Dist_Data.Class = [];
         
         app.Dist_Data = innerjoin(app.Dist_Data,...
-            app.Full_Feature_set(:,ismember(app.Full_Feature_set.(app.Structure).Properties.VariableNames,...
+            app.Full_Feature_set(:,ismember(app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames,...
             {'ImgLabel','Class'})));
         
         app.New_Label = true;
@@ -119,7 +119,7 @@ if strcmp(label_type,'Categorical')
     
     % For the "Combine Classes" option
     if butt_idx==2
-        classes = unique(app.Full_Feature_set.(app.Structure).Class);
+        classes = unique(app.Full_Feature_set.(app.Structure_Idx_Name).Class);
     
         % Enabling combine drop down menus, separate callback to disallow
         % combining the same feature with itself 

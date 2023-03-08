@@ -85,13 +85,13 @@ if length(unique(app.Dist_Data.Class))>1
                         
             % Getting sub-classes for current feature
             current_feature = app.SelectLabelDropDown.Value;
-            current_label_idx = find(strcmp(current_feature,app.Aligned_Labels.(app.Structure).AllLabels));
+            current_label_idx = find(strcmp(current_feature,app.Aligned_Labels.(app.Structure_Idx_Name).AllLabels));
             
             
             % Breaking up classes into quantile ranges
             if isnumeric(app.Dist_Data.Class)
                 number_range = true;
-                %sub_classes = app.Aligned_Labels.(app.Structure).(strcat('Label_',num2str(current_label_idx))).Sub_Class;
+                %sub_classes = app.Aligned_Labels.(app.Structure_Idx_Name).(strcat('Label_',num2str(current_label_idx))).Sub_Class;
                 sub_classes = quantile(app.Dist_Data.Class,[0.25,0.5,0.75]);
             else
                 number_range = false;
@@ -187,7 +187,7 @@ if length(unique(app.Dist_Data.Class))>1
         % Breaking up classes into quantile ranges
         if isnumeric(classes)
             number_range = true;
-            %sub_classes = app.Aligned_Labels.(app.Structure).(current_feature).Sub_Class;
+            %sub_classes = app.Aligned_Labels.(app.Structure_Idx_Name).(current_feature).Sub_Class;
             sub_classes = quantile(app.Dist_Data.Class,[0.25,0.5,0.75]);
         else
             number_range = false;
@@ -271,8 +271,8 @@ if length(unique(app.Dist_Data.Class))>1
             coeffs = app.PCA_Vals{2};
             coeffs = coeffs(:,1:2);
             
-            sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx.(app.Structure),:);
-            plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
+            sub_feature_encodings = app.feature_encodings(app.Overlap_Feature_idx.(app.Structure_Idx_Name),:);
+            plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure_Idx_Name),app.map_idx));
             all_feature_names = sub_feature_encodings.Feature_Names(plot_idx);
             
             app.CurrentFeaturesListBox.Items = all_feature_names;
