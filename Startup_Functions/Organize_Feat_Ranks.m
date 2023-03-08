@@ -2,7 +2,7 @@
 % listbox
 function weighted_encodings = Organize_Feat_Ranks(app,event)
 
-selected_structure = app.Structure;
+selected_structure = app.Structure_Idx_Name;
 
 if ~strcmp(app.FeatureRankingsUsedDropDown.Value,'None')
     

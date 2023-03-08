@@ -62,4 +62,7 @@ app.GenerateCompartmentSegmentationCheckButton.Enable = 'on';
 app.PauseVisualizationCheckBox.Enable = 'on';
 
 % Slide-level summary button
-app.GenerateSlideLevelFeatureSummarySheetButton.Enable = 'on';
+app.GenerateSlideLevelFeatureSummaryButton.Enable = 'on';
+app.SlideSummaryOptionsButtonGroup.Enable = 'on';
+children = get(app.SlideSummaryOptionsButtonGroup,'Children');
+set(children(isprop(children,'Enable')),'Enable','on')

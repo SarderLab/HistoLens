@@ -3,8 +3,10 @@
 function Enable_Fields(app,event)
 
 structure = app.SelectStructureDropDown.Value;
+structure_idx_name = find(strcmp(structure,app.Structure_Names(:,1)));
+structure_idx_name = strcat('Structure_',num2str(structure_idx_name));
 
-if ismember('Colorspace',fieldnames(app.Seg_Params.(structure)))
+if ismember('Colorspace',fieldnames(app.Seg_Params.(structure_idx_name)))
     
     % all items in each tab
     tab_1 = [app.ColorChannelDropDown,app.MinimumSizeEditField,...
@@ -15,9 +17,9 @@ if ismember('Colorspace',fieldnames(app.Seg_Params.(structure)))
         app.ThresholdValueEditField_3,app.SegmentationHierarchyLevelEditField_3];
     all_tabs = [tab_1,tab_2,tab_3];
     
-    orders = [app.Seg_Params.(structure).PAS.Order,...
-        app.Seg_Params.(structure).Luminal.Order,...
-        app.Seg_Params.(structure).Nuclei.Order];
+    orders = [app.Seg_Params.(structure_idx_name).PAS.Order,...
+        app.Seg_Params.(structure_idx_name).Luminal.Order,...
+        app.Seg_Params.(structure_idx_name).Nuclei.Order];
     
     bottom_tab = all_tabs(find(orders==3));
     bottom_tab(1).Enable = 'off';
@@ -34,7 +36,7 @@ if ismember('Colorspace',fieldnames(app.Seg_Params.(structure)))
     end
 end
 
-if ismember('Stain',fieldnames(app.Seg_Params.(structure)))
+if ismember('Stain',fieldnames(app.Seg_Params.(structure_idx_name)))
     
     tab_1 = ['StainChannelDropDown','ThresholdValueEditField_4',...
         'MinimumSizeEditField_4','SegmentationHierarchyLevelEditField_4'];
@@ -45,9 +47,9 @@ if ismember('Stain',fieldnames(app.Seg_Params.(structure)))
         
     all_tabs = [tab_1;tab_2;tab_3];
     
-    orders = [app.Seg_Params.(structure).PAS.Order,...
-        app.Seg_Params.(structure).Luminal.Order,...
-        app.Seg_Params.(structure).Nuclei.Order];
+    orders = [app.Seg_Params.(structure_idx_name).PAS.Order,...
+        app.Seg_Params.(structure_idx_name).Luminal.Order,...
+        app.Seg_Params.(structure_idx_name).Nuclei.Order];
 
     
     bottom_tab = all_tabs(find(orders==3),:);
