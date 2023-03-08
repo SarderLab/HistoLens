@@ -20,12 +20,12 @@ test_data = table(test_samples,test_labels,predictions,'VariableNames',{'ImgLabe
 
 % Using the current features
 if length(app.map_idx) == 1
-    plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
+    plot_idx = find(app.Overlap_Feature_idx.(app.Structure_Idx_Name)==app.map_idx);
 else
-    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
+    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure_Idx_Name),app.map_idx));
 end
 
-features_used = app.Full_Feature_set.(app.Structure).Properties.VariableNames(plot_idx);
+features_used = app.Full_Feature_set.(app.Structure_Idx_Name).Properties.VariableNames(plot_idx);
 
 %% Adding to performance report struct
 app.Performance_Report.Model_Performance = model_performance;

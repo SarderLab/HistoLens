@@ -2,7 +2,7 @@
 % based off a single Train/Test split or a k-fold CV
 function [train_data,test_data,test_labels,unlabeled_data] = Prep_Classification(app)
 
-include_data = app.Full_Feature_set.(app.Structure)(find(ismember(app.Full_Feature_set.(app.Structure).ImgLabel,...
+include_data = app.Full_Feature_set.(app.Structure_Idx_Name)(find(ismember(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,...
     app.Dist_Data.ImgLabel)),:);
 
 class_data = include_data.Class;
@@ -12,9 +12,9 @@ include_data.ImgLabel = [];
 
 % Using the current features
 if length(app.map_idx) == 1
-    plot_idx = find(app.Overlap_Feature_idx.(app.Structure)==app.map_idx);
+    plot_idx = find(app.Overlap_Feature_idx.(app.Structure_Idx_Name)==app.map_idx);
 else
-    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure),app.map_idx));
+    plot_idx = find(ismember(app.Overlap_Feature_idx.(app.Structure_Idx_Name),app.map_idx));
 end
 
 include_data = include_data(:,plot_idx);
