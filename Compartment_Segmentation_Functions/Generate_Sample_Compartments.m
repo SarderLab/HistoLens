@@ -4,13 +4,18 @@ function Generate_Sample_Compartments(app,save_folder,save_number)
 
 % Getting contents of slide path
 dir_contents = dir(app.Slide_Path);
-dir_contents = dir_contents(contains({dir_contents.name},{'.svs'}));
+dir_contents = dir_contents(contains({dir_contents.name},app.WSI_Formats));
 dir_contents = {dir_contents.name};
 
-if any(contains(dir_contents,'.'))
-    dir_contents = cellfun(@(x) strsplit(x,'.'),dir_contents,'UniformOutput',false);
-    dir_contents = cellfun(@(x) x{1}, dir_contents,'UniformOutput',false);
-end
+% Getting the current annotation id(s)
+structure_row = find(strcmp(app.Structure,app.Structure_Names(:,1)));
+annotation_ids = app.Structure_Names{structure_row,2};
+annotation_ids = str2double(strsplit(annotation_ids,','));
+
+% if any(contains(dir_contents,'.'))
+%     dir_contents = cellfun(@(x) strsplit(x,'.'),dir_contents,'UniformOutput',false);
+%     dir_contents = cellfun(@(x) x{1}, dir_contents,'UniformOutput',false);
+% end
 
 slide_wb = waitbar(0,'Saving Example Compartment segmentations',...
     'CreateCancelBtn','setappdata(gcbf,"canceling",1)');
@@ -24,58 +29,71 @@ for slide = 1:length(dir_contents)
     end
 
     slide_name = dir_contents{slide};
+    if contains(slide_name,'.')
+        ann_path = strsplit(slide_name,'.');
+        wsi_ext = ann_path{end};
+        ann_path = ann_path{1};
+    end
+
+    if ~strcmp(wsi_ext,'svs')
+        slide_pointer = openslide_open(strcat(app.Slide_Path,filesep,slide_name));
+    else
+        slide_pointer = [];
+    end
+
     slide_idx_name = strcat('Slide_Idx_',num2str(slide));
 
-    slide_path = strcat(app.Slide_Path,filesep,slide_name,'.svs');
-    xml_path = strrep(slide_path,'.svs','.xml');
+    slide_path = strcat(app.Slide_Path,filesep,slide_name);
+    img_ids = 1:save_number;
 
-    read_xml = xmlread(xml_path);
-    annotations = read_xml.getElementsByTagName('Annotation');
-    structure_regions = annotations.item(app.structure_idx.(app.Structure)-1);
-    regions = structure_regions.getElementsByTagName('Region');
-
-    region_num = regions.getLength;
-    img_ids = randperm(region_num);
-
-    if region_num>=save_number
-        img_ids = img_ids(1:save_number);
+    if strcmp(app.Annotation_Format,'XML')
+        ann_path = strcat(app.Slide_Path,filesep,ann_path,'.xml');
+    else
+        ann_path = strcat(app.Slide_Path,filesep,ann_path,'.json');
+        if ~isfile(ann_path)
+            ann_path = strrep(ann_path,'.json','.geojson');
+        end
     end
+
+    try
+        for img = 1:length(img_ids)
+
+            if strcmp(app.Annotation_Format,'XML')
+                [bbox_coords,mask_coords] = Read_XML_Annotations(ann_path,annotation_ids,img_ids(img));
+            else
+                [bbox_coords,mask_coords] = Read_JSON_Annotations(ann_path,img_ids(img));
+            end
+       
+
+            if strcmp(wsi_ext,'svs')
+                raw_I = imread(slide_path,'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
+            else
+                min_x = bbox_coords(1);
+                min_y = bbox_coords(3);
+                range_x = bbox_coords(2)-bbox_coords(1);
+                range_y = bbox_coords(4)-bbox_coords(3);
+
+                raw_I = openslide_read_region(slide_pointer,min_x,min_y,range_x,range_y);
+            end
+
+            mask = poly2mask(mask_coords(:,1),mask_coords(:,2),size(raw_I,1),size(raw_I,2));
     
-    for img = 1:length(img_ids)
-        reg = regions.item(img_ids(img)-1);
-        verts = reg.getElementsByTagName('Vertex');
-        xy = zeros(verts.getLength-1,2);
-        for vi = 0:verts.getLength-1
-            x = str2double(verts.item(vi).getAttribute('X'));
-            y = str2double(verts.item(vi).getAttribute('Y'));
+            if ismember('StainNormalization',fieldnames(app.Seg_Params))
+                norm_I = normalizeStaining(raw_I,240,0.15,1,app.Seg_Params.StainNormalization.Means,...
+                    app.Seg_Params.StainNormalization.Maxs);
+            else
+                norm_I = raw_I;
+            end
 
-            xy(vi+1,:) = [x,y];
+            composite = Comp_Seg_Gen(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
 
+            save_name = strcat(save_folder,filesep,strrep(slide_name,strcat('.',wsi_ext),''),num2str(img_ids(img)));
+            comp_save_name = strcat(save_name,'_comp.png');
+            raw_save_name = strcat(save_name,'_raw.png');
+
+            imwrite(composite,comp_save_name)
+            imwrite(raw_I,raw_save_name)
         end
-
-        bbox_coords = [min(xy(:,1))-100,max(xy(:,1))+100,min(xy(:,2))-100,max(xy(:,2))+100];
-        mask_coords = zeros(size(xy));
-        mask_coords(:,1) = xy(:,1)-bbox_coords(1);
-        mask_coords(:,2) = xy(:,2)-bbox_coords(3);
-
-        raw_I = imread(slide_path,'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
-        mask = poly2mask(mask_coords(:,1),mask_coords(:,2),size(raw_I,1),size(raw_I,2));
-
-        if ismember('StainNormalization',fieldnames(app.Seg_Params.(app.Structure)))
-            norm_I = normalizeStaining(raw_I,240,0.15,1,app.Seg_Params.(app.Structure).StainNormalization.Means,...
-                app.Seg_Params.(app.Structure).StainNormalization.Maxs);
-        else
-            norm_I = raw_I;
-        end
-
-        composite = Comp_Seg_Gen(app.Seg_Params.(app.Structure).(slide_idx_name).CompartmentSegmentation,norm_I,mask);
-
-        save_name = strcat(save_folder,filesep,slide_name,num2str(img_ids(img)));
-        comp_save_name = strcat(save_name,'_comp.png');
-        raw_save_name = strcat(save_name,'_raw.png');
-
-        imwrite(composite,comp_save_name)
-        imwrite(raw_I,raw_save_name)
     end
 
     waitbar(slide/length(dir_contents),slide_wb,strcat('On slide:',num2str(slide),'of:',num2str(length(dir_contents))))

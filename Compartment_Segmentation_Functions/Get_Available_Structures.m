@@ -3,41 +3,65 @@ function available_structures = Get_Available_Structures(app)
 
 % Iterating through slide names and structure annotation IDs
 slide_names = app.Slide_Names;
-structures = fieldnames(app.Structure_Names);
+structures = app.Structure_Names{:,1};
+ann_ids = app.Structure_Names{:,2};
 
 available_structures = {};
 for s = 1:length(slide_names)
-    current_xml = slide_names{s};
-    current_xml = xmlread(strcat(app.Slide_Path,filesep,strrep(current_xml,'.svs','.xml')));
+    current_slide = slide_names{s};
     
-    annotations = current_xml.getElementsByTagName('Annotation');
+    wsi_ext = strsplit(current_slide,'.');
+    wsi_ext = wsi_ext{end};
 
-    include_structures = {};
-    for st = 1:length(structures)
-        current_structure = structures{st};
-        
-        structure_idx = app.Structure_Names.(current_structure).Annotation_ID;
-        include_array = zeros(1,length(structure_idx));
-        for si = 1:length(structure_idx)
-            structure_regions = annotations.item(structure_idx(si)-1);
-            if ~isempty(structure_regions)
-                regions = structure_regions.getElementsByTagName('Region');
-                structure_num = regions.getLength;
-                if structure_num>0
-                    include_array(si) = 1;
+    if strcmp(app.Annotation_Format,'XML')
+        current_ann = strcat(app.Slide_Path,filesep,strrep(current_slide,wsi_ext,'xml'));
+        current_ann = xmlread(current_ann);
+
+        annotations = current_ann.getElementsByTagName('Annotation');
+    
+        include_structures = {};
+        for st = 1:length(structures)
+            current_structure = structures{st};
+            
+            structure_idx = str2double(ann_ids);
+            include_array = zeros(1,length(structure_idx));
+            for si = 1:length(structure_idx)
+                structure_regions = annotations.item(structure_idx(si)-1);
+                if ~isempty(structure_regions)
+                    regions = structure_regions.getElementsByTagName('Region');
+                    structure_num = regions.getLength;
+                    if structure_num>0
+                        include_array(si) = 1;
+                    else
+                        include_array(si) = 0;
+                    end
                 else
                     include_array(si) = 0;
                 end
-            else
-                include_array(si) = 0;
+            end
+    
+            if any(include_array,'all')
+                include_structures = [include_structures;current_structure];
             end
         end
 
-        if any(include_array,'all')
-            include_structures = [include_structures;current_structure];
+    elseif strcmp(app.Annotation_Format,'JSON')
+        current_ann = strcat(app.Slide_Path,filesep,strrep(current_slide,wsi_ext,'json'));
+
+        if ~isfile(current_ann)
+            current_ann = strrep(current_ann,'.json','.geojson');
+        end
+        current_ann = jsondecode(current_ann);
+
+        % Haven't figured out a good way to do multi-compartment with json
+        % annotations yet so just pass it if it has anything
+        if ~isempty(current_ann)
+            include_structures = structures;
+        else
+            include_structures = [];
         end
     end
-
+    
     available_structures = [available_structures,{include_structures}];
 end
 

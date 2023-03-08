@@ -2,7 +2,7 @@
 % specifications to generate new image
 function Comp_Seg_Ex(app)
 
-structure = app.SelectStructureDropDown.Value;
+%structure = app.SelectStructureDropDown.Value;
 
 % Get current method for compartment segmentation
 sel_butt = app.SegmentationMethodButtonGroup.SelectedObject;
