@@ -2,7 +2,7 @@
 function Align_Structure_Level_Label(app,new_label_table)
 
 % Only adding structure_level_labels to the current structure
-current_structure = app.Structure;
+current_structure = app.Structure_Idx_Name;
 
 % Table with one column, 'ImgLabel'
 align_table = app.base_Feature_set.(current_structure)(:,end);

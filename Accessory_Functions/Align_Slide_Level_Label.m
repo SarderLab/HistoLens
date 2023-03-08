@@ -31,6 +31,7 @@ for s = 1:length(all_structures)
     non_overlap_names = align_table{~ismember(align_table.SlideLabel,new_label_table.SlideLabel),:};
     if ~isempty(non_overlap_names)
         % Adding missing slides to the bottom
+        non_overlap_names = unique(non_overlap_names(:,2));
         missing_slides = cell2table([non_overlap_names,repmat({'Unlabeled'},length(non_overlap_names),width(new_label_table)-1)],'VariableNames',new_label_table.Properties.VariableNames);
         new_label_table = [new_label_table;missing_slides];
     end
@@ -88,7 +89,7 @@ for s = 1:length(all_structures)
     end
 end
 
-app.SelectLabelDropDown.Items = app.Aligned_Labels.(app.Structure).AllLabels;
+app.SelectLabelDropDown.Items = app.Aligned_Labels.(app.Structure_Idx_Name).AllLabels;
 
 % Adding new labels to app.Tree
 Update_Subset_Tree(app)

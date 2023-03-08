@@ -38,8 +38,20 @@ new_structure = drop_downs{use_image};
 
 wb = waitbar(0,strcat('Transferring ',current_image,' to ',new_structure));
 
+new_structure_idx = find(strcmp(new_structure,app.Structure_Names(:,1)));
+new_structure_idx = app.Structure_Names{new_structure_idx,2};
+new_structure_idx = str2double(strsplit(new_structure_idx,','));
+if length(new_structure_idx)>1
+    new_structure_idx = new_structure_ids(1);
+end
+
 % Getting original vertices
-og_structure_idx = app.structure_idx.(app.Structure);
+og_structure_row = find(strcmp(app.Structure,app.Structure_Names(:,1)));
+og_structure_idx = app.Structure_Names{og_structure_row,2};
+og_structure_idx = str2double(strsplit(annotation_ids,','));
+if length(og_structure_idx)>1
+    og_structure_idx = og_structure_ids(1);
+end
 
 % Adding annotation to an existing layer
 struct_og = xml2struct(strcat(app.Slide_Path,filesep,slide_name,'.xml'));
@@ -107,37 +119,37 @@ if ~strcmp(new_structure,'New Layer')
     struct2xml(struct_og,strcat(app.Slide_Path,filesep,slide_name,'.xml'))
 
     % Making new feature set file
-    feat_idx = find(ismember(current_image,app.Full_Feature_set.(app.Structure).ImgLabel));
-    transfer_features = app.Full_Feature_set.(app.Structure)(feat_idx,:);
+    feat_idx = find(ismember(current_image,app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel));
+    transfer_features = app.Full_Feature_set.(app.Structure_Idx_Name)(feat_idx,:);
 
-    base_feat_idx = find(ismember(current_image,app.base_Feature_set.(app.Structure).ImgLabel));
-    transfer_base_features = app.base_Feature_set.(app.Structure)(base_feat_idx,:);
+    base_feat_idx = find(ismember(current_image,app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel));
+    transfer_base_features = app.base_Feature_set.(app.Structure_Idx_Name)(base_feat_idx,:);
 
-    ign_idx = find(ismember(current_image,app.Ignore_idx.(app.Structure).ImgLabel));
-    transfer_ignore = app.Ignore_idx.(app.Structure)(ign_idx,:);
+    ign_idx = find(ismember(current_image,app.Ignore_idx.(app.Structure_Idx_Name).ImgLabel));
+    transfer_ignore = app.Ignore_idx.(app.Structure_Idx_Name)(ign_idx,:);
 
-    notes_idx = find(ismember(current_image,app.Notes.(app.Structure).ImgLabel));
-    transfer_notes = app.Notes.(app.Structure)(notes_idx,:);
+    notes_idx = find(ismember(current_image,app.Notes.(app.Structure_Idx_Name).ImgLabel));
+    transfer_notes = app.Notes.(app.Structure_Idx_Name)(notes_idx,:);
     
     if ismember(new_structure,fieldnames(app.Notes))
         app.Notes.(new_structure) = [app.Notes.(new_structure);transfer_notes];
     end
 
     display(strcat('Height pre transfer ',new_structure,num2str(height(app.Full_Feature_set.(new_structure)))))
-    display(strcat('Height pre transfer ',app.Structure,num2str(height(app.Full_Feature_set.(app.Structure)))))
+    display(strcat('Height pre transfer ',app.Structure_Idx_Name,num2str(height(app.Full_Feature_set.(app.Structure_Idx_Name)))))
     
     app.Full_Feature_set.(new_structure) = [app.Full_Feature_set.(new_structure);transfer_features];
     app.base_Feature_set.(new_structure) = [app.base_Feature_set.(new_structure);transfer_base_features];
     app.Ignore_idx.(new_structure) = [app.Ignore_idx.(new_structure);transfer_ignore];
 
 
-    app.Full_Feature_set.(app.Structure)(feat_idx,:) = [];
-    app.base_Feature_set.(app.Structure)(base_feat_idx,:) = [];
-    app.Ignore_idx.(app.Structure)(ign_idx,:) = [];
-    app.Notes.(app.Structure)(notes_idx,:) = [];
+    app.Full_Feature_set.(app.Structure_Idx_Name)(feat_idx,:) = [];
+    app.base_Feature_set.(app.Structure_Idx_Name)(base_feat_idx,:) = [];
+    app.Ignore_idx.(app.Structure_Idx_Name)(ign_idx,:) = [];
+    app.Notes.(app.Structure_Idx_Name)(notes_idx,:) = [];
 
     % Editing image labels for other images in that slide
-    in_slide_images = app.Full_Feature_set.(app.Structure).ImgLabel(find(contains(app.Full_Feature_set.(app.Structure).ImgLabel,slide_name)));
+    in_slide_images = app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel(find(contains(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,slide_name)));
     all_name_parts = cellfun(@(x) strsplit(x,'_'),in_slide_images,'UniformOutput',false);
     all_idxes = cellfun(@(x) x{end},all_name_parts,'UniformOutput',false);
     for i = 1:length(all_idxes)
@@ -150,9 +162,9 @@ if ~strcmp(new_structure,'New Layer')
         end
     end
 
-    app.Full_Feature_set.(app.Structure).ImgLabel(find(contains(app.Full_Feature_set.(app.Structure).ImgLabel,slide_name))) = all_name_parts;
+    app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel(find(contains(app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel,slide_name))) = all_name_parts;
 
-    in_slide_images = app.base_Feature_set.(app.Structure).ImgLabel(find(contains(app.base_Feature_set.(app.Structure).ImgLabel,slide_name)));
+    in_slide_images = app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel(find(contains(app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel,slide_name)));
     all_name_parts = cellfun(@(x) strsplit(x,'_'),in_slide_images,'UniformOutput',false);
     all_idxes = cellfun(@(x) x{end},all_name_parts,'UniformOutput',false);
     for i = 1:length(all_idxes)
@@ -164,9 +176,9 @@ if ~strcmp(new_structure,'New Layer')
             all_name_parts{i} = strjoin(all_name_parts{i},'_');
         end
     end
-    app.base_Feature_set.(app.Structure).ImgLabel(find(contains(app.base_Feature_set.(app.Structure).ImgLabel,slide_name))) = all_name_parts;
+    app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel(find(contains(app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel,slide_name))) = all_name_parts;
 
-    in_slide_images = app.Notes.(app.Structure).ImgLabel(find(contains(app.Notes.(app.Structure).ImgLabel,slide_name)));
+    in_slide_images = app.Notes.(app.Structure_Idx_Name).ImgLabel(find(contains(app.Notes.(app.Structure_Idx_Name).ImgLabel,slide_name)));
     all_name_parts = cellfun(@(x) strsplit(x,'_'), in_slide_images,'UniformOutput',false);
     all_idxes = cellfun(@(x) x{end}, all_name_parts,'UniformOutput',false);
     for i = 1:length(all_idxes)
@@ -178,11 +190,11 @@ if ~strcmp(new_structure,'New Layer')
             all_name_parts{i} = strjoin(all_name_parts{i},'_');
         end
     end
-    app.Notes.(app.Structure).ImgLabel(find(contains(app.Notes.(app.Structure).ImgLabel,slide_name))) = all_name_parts;
+    app.Notes.(app.Structure_Idx_Name).ImgLabel(find(contains(app.Notes.(app.Structure_Idx_Name).ImgLabel,slide_name))) = all_name_parts;
 
 
     display(strcat('Height post transfer ',new_structure,num2str(height(app.Full_Feature_set.(new_structure)))))
-    display(strcat('Height post transfer ',app.Structure,num2str(height(app.Full_Feature_set.(app.Structure)))))
+    display(strcat('Height post transfer ',app.Structure_Idx_Name,num2str(height(app.Full_Feature_set.(app.Structure_Idx_Name)))))
 
 
     waitbar(0.75,wb,'Updating Feature Set and Notes')
@@ -190,9 +202,8 @@ if ~strcmp(new_structure,'New Layer')
 else
     HistoLens_NewAnnotationLayer(app)
 
-    new_name = fieldnames(app.structure_idx);
-    new_name = new_name{end};
-    new_idx = app.structure_idx.(new_name);
+    new_name = app.Structure_Names{end,1};
+    new_idx = app.Structure_Names{end,2};
 
     % Adding new annotation layer to xml file
     % Adding annotation to an existing layer
@@ -233,39 +244,40 @@ else
     struct2xml(struct_mod,strcat(app.Slide_Path,filesep,slide_name,'.xml'))
 
     % Making new feature set file
-    feat_idx = find(ismember(current_image,app.Full_Feature_set.(app.Structure).ImgLabel));
-    transfer_features = app.Full_Feature_set.(app.Structure)(feat_idx,:);
+    feat_idx = find(ismember(current_image,app.Full_Feature_set.(app.Structure_Idx_Name).ImgLabel));
+    transfer_features = app.Full_Feature_set.(app.Structure_Idx_Name)(feat_idx,:);
 
-    base_feat_idx = find(ismember(current_image,app.base_Feature_set.(app.Structure).ImgLabel));
-    transfer_base_features = app.base_Feature_set.(app.Structure)(base_feat_idx,:);
+    base_feat_idx = find(ismember(current_image,app.base_Feature_set.(app.Structure_Idx_Name).ImgLabel));
+    transfer_base_features = app.base_Feature_set.(app.Structure_Idx_Name)(base_feat_idx,:);
 
     ign_idx = find(ismember(current_image,app.Ignore_idx.ImgLabel));
-    transfer_ignore = app.Ignore_idx.(app.Structure)(ign_idx,:);
+    transfer_ignore = app.Ignore_idx.(app.Structure_Idx_Name)(ign_idx,:);
 
-    notes_idx = find(ismember(current_image,app.Notes.(app.Structure).ImgLabel));
-    transfer_notes = app.Notes.(app.Structure)(notes_idx,:);
+    notes_idx = find(ismember(current_image,app.Notes.(app.Structure_Idx_Name).ImgLabel));
+    transfer_notes = app.Notes.(app.Structure_Idx_Name)(notes_idx,:);
     app.Notes.(new_name) = transfer_notes;
-    app.Notes_File.(new_name) = strrep(app.Notes_File.(app.Structure),app.Structure,new_name);
+    app.Notes_File.(new_name) = strrep(app.Notes_File.(app.Structure_Idx_Name),app.Structure_Idx_Name,new_name);
 
     app.Full_Feature_set.(new_name) = transfer_features;
     app.base_Feature_set.(new_name) = transfer_base_features;
     app.Ignore_idx.(new_name) = transfer_ignore;
 
-    app.Full_Feature_set.(app.Structure)(feat_idx,:) = [];
-    app.base_Feature_set.(app.Structure)(base_feat_idx,:) = [];
-    app.Ignore_idx.(app.Structure)(ign_idx,:) = [];
-    app.Notes.(app.Structure)(notes_idx,:) = [];
+    app.Full_Feature_set.(app.Structure_Idx_Name)(feat_idx,:) = [];
+    app.base_Feature_set.(app.Structure_Idx_Name)(base_feat_idx,:) = [];
+    app.Ignore_idx.(app.Structure_Idx_Name)(ign_idx,:) = [];
+    app.Notes.(app.Structure_Idx_Name)(notes_idx,:) = [];
 
-    app.Overlap_Feature_idx.(new_name) = app.Overlap_Feature_idx.(app.Structure);
-    app.Feat_Rank.(new_name) = app.Feat_Rank.(app.Structure);
+    app.Overlap_Feature_idx.(new_name) = app.Overlap_Feature_idx.(app.Structure_Idx_Name);
+    app.Feat_Rank.(new_name) = app.Feat_Rank.(app.Structure_Idx_Name);
     app.PersistentLabels.(new_name) = '';
-    app.StructureDropDown.Items = fieldnames(app.Full_Feature_set);
-    app.StructureDropDown.Value = app.Structure;
+    app.StructureDropDown.Items = app.Structure_Names(:,1);
+    current_structure = find(strcmp(app.Structure,app.Structure_Names(:,1)));
+    app.StructureDropDown.Items = app.StructureDropDown.Items(current_structure);
     
-    aligned_labels = fieldnames(app.Aligned_Labels.(app.Structure));
+    aligned_labels = fieldnames(app.Aligned_Labels.(app.Structure_Idx_Name));
     for a = 1:length(aligned_labels)
         current_feature = aligned_labels{a};
-        aligned = app.Aligned_Labels.(app.Structure).(current_feature).Aligned;
+        aligned = app.Aligned_Labels.(app.Structure_Idx_Name).(current_feature).Aligned;
         app.Aligned_Labels.(new_name) = aligned(find(ismember(current_image,aligned.ImgLabel)),:);
     end
 
