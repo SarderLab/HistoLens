@@ -19,7 +19,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
 
     selected1 = app.Current_Name{1};
     
-    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected1),:);
+    notes_contents = app.Notes.(app.Structure_Idx_Name).Notes(strcmp(app.Notes.(app.Structure_Idx_Name).ImgLabel,selected1),:);
     notes_contents = notes_contents{1};
     
     app.Img_one_txt.Text = selected1;
@@ -31,7 +31,7 @@ if app.Comparing && ~strcmp(app.Image_Name_Label.Visible,'on')
     
     selected2 = app.Current_Name{2};
     
-    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected2),:);
+    notes_contents = app.Notes.(app.Structure_Idx_Name).Notes(strcmp(app.Notes.(app.Structure_Idx_Name).ImgLabel,selected2),:);
     notes_contents = notes_contents{1};
     
     app.Img_two_txt.Text = selected2;
@@ -60,7 +60,7 @@ else
     % name and the other with any notes the user makes.
     selected = app.Current_Name;
     
-    notes_contents = app.Notes.(app.Structure).Notes(strcmp(app.Notes.(app.Structure).ImgLabel,selected),:);
+    notes_contents = app.Notes.(app.Structure_Idx_Name).Notes(strcmp(app.Notes.(app.Structure_Idx_Name).ImgLabel,selected),:);
     notes_contents = notes_contents{1};
 
     if ~isempty(notes_contents)
