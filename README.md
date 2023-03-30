@@ -102,7 +102,7 @@ Written and compiled using Matlab R2022a
 
 ### Installation
 
-1. Download HistoLens_Demo_Files from [this link](https://buffalo.box.com/s/ifvp6mu9spcnzn8tag2gkq2k7lmn50n5/)
+1. Download HistoLens_Demo_Files from [this link](https://trailblazer.box.com/s/i6ohnlvd966t275v92in06d50armbqbt)
 2. Access app installer for your particular operating system from HistoLens_Demo_Files/Compiled_Application_Installer/
 3. Download installation file.
 4. Double click on installer file.
