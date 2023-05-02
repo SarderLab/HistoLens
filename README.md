@@ -126,8 +126,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Sam Border - spborder@buffalo.edu
-Pinaki Sarder (PI) - pinakisa@buffalo.edu
+Sam Border -  Samuel.Border@medicine.ufl.edu
+Pinaki Sarder (PI) - pinaki.sarder@ufl.edu
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
