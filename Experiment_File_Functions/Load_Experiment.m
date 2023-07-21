@@ -17,6 +17,11 @@ if any(ismember(fieldnames(exp_struct),'Slide_Directory'))
     end
 end
 
+% Checking for baseline mpp
+if any(ismember(fieldnames(exp_struct),'Baseline_MPP'))
+    app.Baseline_MPP = exp_struct.Baseline_MPP;
+end
+
 % Checking number of slides is the same as in slide directory (check for
 % added or missing slides)
 

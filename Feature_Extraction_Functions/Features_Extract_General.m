@@ -1,6 +1,10 @@
 % --- Function for Generalized Feature Extraction based on array of feature
 % indices
-function feat_row = Features_Extract_General(img,comp_img,feat_idxes,mpp)
+function feat_row = Features_Extract_General(img,comp_img,feat_idxes,mpp,mpp_scale)
+
+% Resizing images according to mpp_scale
+img = imresize(img,mpp_scale,'bilinear');
+comp_img = imresize(comp_img,mpp_scale,'bilinear');
 
 comp_img = logical(comp_img);
 % Initializing feature row
@@ -434,7 +438,6 @@ if any(ismember(feat_idxes,(330:334)))
     % Solidity, Eccentricity]
     mask_feats = regionprops(boundary_mask,'Area','ConvexArea','Perimeter','Solidity','Eccentricity');
     
-
     area = mask_feats.Area*(mpp^2);
     convex_area = mask_feats.ConvexArea*(mpp^2);
     perimeter = mask_feats.Perimeter*(mpp);

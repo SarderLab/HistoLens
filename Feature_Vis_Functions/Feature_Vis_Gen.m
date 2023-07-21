@@ -8,6 +8,7 @@ function Feature_Vis_Gen(app,event)
     w_in_range = app.w_in_range;
     texture_window = app.texture_window;
 
+
     vis_params = [min_object_size,nucpixradius,w_in_range,texture_window];
     if ~app.Comparing
 
@@ -28,7 +29,6 @@ function Feature_Vis_Gen(app,event)
             assignin('base','all_feature_vis',all_feature_vis)
             save(strcat(app.output_dir,'all_feature_vis.mat'),all_feature_vis)
         end
-
 
     else
 
@@ -68,7 +68,7 @@ function Feature_Vis_Gen(app,event)
     end
 end
 
-function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_feature_vis, vis_params)
+function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_feature_vis,vis_params)
     
     min_object_size = vis_params(1);
     nucpixradius = vis_params(2);

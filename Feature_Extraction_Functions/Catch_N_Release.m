@@ -70,17 +70,25 @@ for s = 1:length(slide_names)
     
         % Uncomment this try-catch to account for any slides with 0 structures
         % annotated
-        mpp = read_xml.getElementsByTagName('Annotations');
-        mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
-    
+        try
+            mpp = read_xml.getElementsByTagName('Annotations');
+            mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
+        catch
+            mpp = Nan;
+        end
+        
         % When annotations are the result of network predictions, the MPP is
         % not written to the xml file
         if ~isnan(mpp)
             app.MPP = mpp;
         else
-            mpp = 0.2253;
+            mpp = app.Baseline_MPP;
             app.MPP = mpp;
         end
+        
+        % Assigning pixel-scaling value
+        mpp_scale = mpp/app.Baseline_MPP;
+
     else
         current_path = strcat(slide_path,filesep,slide,'.json');
         if ~isfile(current_path)
@@ -155,7 +163,7 @@ for s = 1:length(slide_names)
     ann_format = app.Annotation_Format;
 
     try
-        parfor r = 1:reg_count
+        for r = 1:reg_count
         %for r = 1:length(reg_array)
             if strcmp(ann_format,'XML')
                 reg = reg_array(r);
@@ -210,7 +218,7 @@ for s = 1:length(slide_names)
             comp_img = Comp_Seg_Gen(seg_params.(slide_idx_name).CompartmentSegmentation,img,mask);
     
             % Extracting feature row (corresponding to specific structure
-            feat_row_combined = Features_Extract_General(img,comp_img,feature_indices,mpp);
+            feat_row_combined = Features_Extract_General(img,comp_img,feature_indices,mpp,mpp_scale);
     
             % Assigning a name to that structure
             new_ID = strcat(structure_ID,'_',num2str(r));

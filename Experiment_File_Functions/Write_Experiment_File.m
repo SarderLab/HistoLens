@@ -20,6 +20,7 @@ function Write_Experiment_File(app)
 % Starting Experiment struct with global info
 % Slide Directory
 Experiment_Struct.Slide_Directory = app.Slide_Path;
+Experiment_Struct.Baseline_MPP = app.Baseline_MPP;
 % Stain Normalization (if added)
 if ismember('StainNormalization',fieldnames(app.Seg_Params))
     char_means = num2str(app.Seg_Params.StainNormalization.Means);
