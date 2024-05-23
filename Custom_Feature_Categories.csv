@@ -1,0 +1,13 @@
+Feature_Names,Compartment,Type,Specific,Definition,Map_Method,Structure_Specificity
+Silver Content,Silver,Morphological,Area,Total silver area in the structure,Object_Specific_Map,Non_Structure_Specific
+Silver Area Ratio,Silver,Morphological,Area Ratio,Ratio between silver area and total structural area,Object_Specific_Map,Non_Structure_Specific
+Silver Object Area >10,Silver,Size,Object Area >10,Pixel area of all silver objects greater than 10 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >20,Silver,Size,Object Area >20,Pixel area of all silver objects greater than 20 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >30,Silver,Size,Object Area >30,Pixel area of all silver objects greater than 30 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >40,Silver,Size,Object Area >40,Pixel area of all silver objects greater than 40 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >50,Silver,Size,Object Area >50,Pixel area of all silver objects greater than 50 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >60,Silver,Size,Object Area >60,Pixel area of all silver objects greater than 60 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >70,Silver,Size,Object Area >70,Pixel area of all silver objects greater than 70 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >80,Silver,Size,Object Area >80,Pixel area of all silver objects greater than 80 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >90,Silver,Size,Object Area >90,Pixel area of all silver objects greater than 90 pixels in size,Region_Specific_Map,Non_Structure_Specific
+Silver Object Area >100,Silver,Size,Object Area >100,Pixel area of all silver objects greater than 100 pixels in size,Region_Specific_Map,Non_Structure_Specific
