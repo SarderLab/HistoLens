@@ -81,10 +81,16 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
     num_feat = length(features_needed);
     feat_count = 0;
     
-    pas_mask = composite(:,:,1);
-    lum_mask = composite(:,:,2);
-    nuc_mask = composite(:,:,3);
-    boundary_mask = pas_mask|lum_mask|nuc_mask;
+    if size(composite,3)==3
+        pas_mask = composite(:,:,1);
+        lum_mask = composite(:,:,2);
+        nuc_mask = composite(:,:,3);
+        boundary_mask = pas_mask|lum_mask|nuc_mask;
+    else
+        boundary_mask = squeeze(sum(composite,3))>0;
+       
+    end
+
 
     % Luminal space solidity, texture
     if any(ismember(features_needed,[1,4:10]))
@@ -1197,6 +1203,14 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
             all_feature_vis = insert_vis(features_needed,(434:448),feat_vis,all_feature_vis);
             update_waitbar(wb,feat_count,num_feat);
         end
+    end
+
+    if any(features_needed>448)
+        % Custom feature visualizations added here
+        
+        [all_feature_vis,feat_count] = Vis_Custom_Features(I,mask,composite,features_needed,all_feature_vis,vis_params);
+        update_waitbar(wb,feat_count,num_feat)
+
     end
     
     waitbar(1,wb,strcat('Feature Visualizations completed:',string(num_feat)))
