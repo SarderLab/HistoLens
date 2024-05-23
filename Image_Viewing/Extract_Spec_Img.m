@@ -36,7 +36,6 @@ wsi_exts = cellfun(@(x) x{end}, split_names, 'UniformOutput',false);
 
 compare_names = {};
 for i = 1:length(split_names)
-    split_names{i}
     if length(split_names{i})>2
         compare_names(i) = strjoin(split_names{i}{1:end-1},'.');
     else
@@ -64,7 +63,7 @@ if ~isempty(slide_idx)
 
     if strcmp(app.Annotation_Format,'XML')
         ann_path = strcat(ann_path,'.xml');
-        [bbox_coords,mask_coords] = Read_XML_Annotations(ann_path,annotation_ids,img_id);
+        [bbox_coords,mask_coords,mpp] = Read_XML_Annotations(ann_path,annotation_ids,img_id);
     
     elseif strcmp(app.Annotation_Format,'JSON')
         if isfile(strcat(ann_path,'.json'))
@@ -104,20 +103,27 @@ if ~isempty(slide_idx)
     current_seg_params = app.Seg_Params.(slide_idx_name).CompartmentSegmentation;
     if ~ismember('Path',fieldnames(current_seg_params))
 
-        composite = Comp_Seg_Gen(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
+        composite = Comp_Seg(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
     else
-        % Special case hack I hate this
-        %raw_I = imresize(raw_I,4);
-        %norm_I = imresize(norm_I,4);
-        %mask = imresize(mask,4);
-        % It's okay, past Sam, I'll make the bad lines go away.
-        
+
         img_name = strcat(slide_name,'_',num2str(img_id));
-        composite = Comp_Seg_Gen(current_seg_params,norm_I,img_name);
+        composite = Comp_Seg(current_seg_params,norm_I,img_name);
     end
 else
 
     f = msgbox({'Could not find',slide_name,' in ',app.Slide_Path});
 end
+
+if ~isempty(app.Baseline_MPP)
+    mpp_scale = mpp/app.Baseline_MPP;
+    
+    % Resizing images according to mpp_scale
+    raw_I = imresize(raw_I,mpp_scale,'bilinear');
+    norm_I = imresize(norm_I,mpp_scale,'bilinear');
+    mask = imresize(mask,mpp_scale,'bilinear');
+    composite = imresize(composite,mpp_scale,'bilinear');
+
+end
+
 
 

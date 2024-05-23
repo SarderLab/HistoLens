@@ -1,8 +1,16 @@
 % Function to read XML annotation files
-function [bbox_coords,mask_coords] = Read_XML_Annotations(filepath,structure_idx,image_id)
+function [bbox_coords,mask_coords,mpp] = Read_XML_Annotations(filepath,structure_idx,image_id)
 
 read_xml = xmlread(filepath);
 annotations = read_xml.getElementsByTagName('Annotation');
+
+try
+    mpp = read_xml.getElementsByTagName('Annotations');
+    mpp = str2double(mpp.item(0).getAttribute('MicronsPerPixel'));
+catch
+    mpp = [];
+end
+
 
 if length(structure_idx)>1
     structure_regions = cell(1);

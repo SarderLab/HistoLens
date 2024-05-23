@@ -1,9 +1,11 @@
 % --- Function to view compartment in addition to feature map
-function Comp_Peeking(app,event)
+function Comp_Peeking(app,src,event,i)
 
-comp_list = {'Pas','Lum','Nuc'};
+src
+event
+i
 
-this_comp = find(strcmp(app.Comp_Peek,comp_list));
+this_comp = i;
 if strcmp(app.Image_Name_Label.Visible,'on')
     img = app.Current_Img;
 
