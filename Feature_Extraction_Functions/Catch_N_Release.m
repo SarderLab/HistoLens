@@ -215,7 +215,7 @@ for s = 1:length(slide_names)
             if ismember('Path',fieldnames(seg_params.(slide_idx_name).CompartmentSegmentation))
                 mask = strcat(slide,'_',num2str(r));
             end
-            comp_img = Comp_Seg_Gen(seg_params.(slide_idx_name).CompartmentSegmentation,img,mask);
+            comp_img = Comp_Seg(seg_params.(slide_idx_name).CompartmentSegmentation,img,mask);
     
             % Extracting feature row (corresponding to specific structure
             feat_row_combined = Features_Extract_General(img,comp_img,feature_indices,mpp,mpp_scale);

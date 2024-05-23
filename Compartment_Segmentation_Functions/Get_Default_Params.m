@@ -6,85 +6,57 @@ selectedButton = app.SegmentationMethodButtonGroup.SelectedObject;
 string_vals = {app.SegmentationMethodButtonGroup.Buttons.Text};
 butt_idx = find(strcmp(selectedButton.Text,string_vals));
 
-structure = app.SelectStructureDropDown.Value;
+%structure = app.SelectStructureDropDown.Value;
+
+% Updating app.ParametersPanel
 if butt_idx==1
+    app.ParametersPanel.Title = 'Colorspace Parameters';
+    app.ColorSelectLabel.Text = 'Colorspace';
     
-    app.Seg_Params.Colorspace = app.ColorSpaceDropDown.Value;
-    channel = app.ColorChannelDropDown.Value;
-    channel = strsplit(channel,' ');
-    channel = channel{end};
-    channel = str2num(channel);
-    app.Seg_Params.Luminal.Channel = channel;
-    app.Seg_Params.Luminal.Threshold = app.ThresholdValueEditField.Value;
-    app.Seg_Params.Luminal.MinSize = app.MinimumSizeEditField.Value;
-    app.Seg_Params.Luminal.Splitting = 0;
-    app.Seg_Params.Luminal.Order = app.SegmentationHierarchyLevelEditField.Value;
+    app.ChannelDropdown.Items = {'RGB (Red, Green, Blue)',...
+        'HSV (Hue, Saturation, Value)',...
+        'LAB'};
+    app.ChannelDropdown.ItemsData = {'RGB','HSV','LAB'};
+
+    app.ChannelDropdown.Value = app.ChannelDropdown.ItemsData{2};
+      
+    app.Seg_Params.Colorspace = app.ChannelDropdown.Value;
+elseif butt_idx==2
+    app.ParametersPanel.Title = 'Color Deconvolution';
+    app.ColorSelectLabel.Text = 'Stain Type';
+
+    app.ChannelDropdown.Items = {'Hematoxylin and Eosin determined by G. Landini',...
+        'Hematoxylin and Eosin determined by A.C. Ruifrok',...
+        'Hematoxylin and DAB',...
+        'Hematoxylin, Eosin and DAB',...
+        'Hematoxylin and AEC',...
+        'Fast Red, Fast Blue and DAB',...
+        'Methyl green and DAB',...
+        'Azan-Mallory',...
+        'Alcian blue & Hematoxylin',...
+        'Hematoxylin and Periodic Acid Schiff',...
+        'RGB subtractive',...
+        'CMY subtractive'};
+
+    app.ChannelDropdown.ItemsData = {'H&E','H&E 2','H DAB','H&E DAB','H AEC',...
+        'FastRed FastBlue DAB','Methyl Green DAB','Azan-Mallory','Alcian blue & H',...
+        'H PAS','RGB','CMY'};
     
-    channel = app.ColorChannelDropDown_2.Value;
-    channel = strsplit(channel,' ');
-    channel = channel{end};
-    channel = str2num(channel);
-    app.Seg_Params.PAS.Channel = channel;
-    app.Seg_Params.PAS.Threshold = app.ThresholdValueEditField_2.Value;
-    app.Seg_Params.PAS.MinSize = app.MinimumSizeEditField_2.Value;
-    app.Seg_Params.PAS.Splitting = 0;
-    app.Seg_Params.PAS.Order = app.SegmentationHierarchyLevelEditField_2.Value;
-    
-    channel = app.ColorChannelDropDown_3.Value;
-    channel = strsplit(channel,' ');
-    channel = channel{end};
-    channel = str2num(channel);
-    
-    app.Seg_Params.Nuclei.Channel = channel;
-    app.Seg_Params.Nuclei.Threshold = app.ThresholdValueEditField_3.Value;
-    app.Seg_Params.Nuclei.MinSize = app.MinimumSizeEditField_3.Value;
-    app.Seg_Params.Nuclei.Splitting = app.SplittingSlider.Value;
-    app.Seg_Params.Nuclei.Order = app.SegmentationHierarchyLevelEditField_3.Value;
-    
+    app.ChannelDropdown.Value = app.ChannelDropdown.ItemsData{1};
+
+    app.Seg_Params.ColorDeconvolution = app.ChannelDropdown.Value;
 end
 
-if butt_idx == 2
-    
-    stain_code = app.StainTypeDropDown.Value;
-    stain_code = strsplit(stain_code,'(');
-    stain_code = stain_code{end};
-    stain_code = strrep(stain_code,')','');
-    
-    app.Seg_Params.Stain = stain_code;
-    
-    channel_code = app.StainChannelDropDown.Value;
-    channel_code = strsplit(channel_code,' ');
-    channel_code = channel_code{end};
-    channel_code = str2num(channel_code);
-    
-    app.Seg_Params.Luminal.Channel = channel_code;
-    app.Seg_Params.Luminal.Threshold = app.ThresholdValueEditField_4.Value;
-    app.Seg_Params.Luminal.MinSize = app.MinimumSizeEditField_4.Value;
-    app.Seg_Params.Luminal.Splitting = 0;
-    app.Seg_Params.Luminal.Order = app.SegmentationHierarchyLevelEditField_4.Value;
-    
-    channel_code = app.StainChannelDropDown_2.Value;
-    channel_code = strsplit(channel_code,' ');
-    channel_code = channel_code{end};
-    channel_code = str2num(channel_code);
-    
-    app.Seg_Params.PAS.Channel = channel_code;
-    app.Seg_Params.PAS.Threshold = app.ThresholdValueEditField_5.Value;
-    app.Seg_Params.PAS.MinSize = app.MinimumSizeEditField_5.Value;
-    app.Seg_Params.PAS.Splitting = 0;
-    app.Seg_Params.PAS.Order = app.SegmentationHierarchyLevelEditField_5.Value;
-    
-    channel_code = app.StainChannelDropDown_3.Value;
-    channel_code = strsplit(channel_code,' ');
-    channel_code = channel_code{end};
-    channel_code = str2num(channel_code);
-    
-    app.Seg_Params.Nuclei.Channel = channel_code;
-    app.Seg_Params.Nuclei.Threshold = app.ThresholdValueEditField_6.Value;
-    app.Seg_Params.Nuclei.MinSize = app.MinimumSizeEditField_6.Value;
-    app.Seg_Params.Nuclei.Splitting = app.SplittingSlider_2.Value;
-    app.Seg_Params.Nuclei.Order = app.SegmentationHierarchyLevelEditField_6.Value;
-    
+% Grabbing default values for segmentation parameters
+for st = 1:length(app.Stain_Names)
+    stain_field = strcat('Stain',num2str(st));
+
+    app.Seg_Params.(stain_field).Channel = app.Channels(st);
+    app.Seg_Params.(stain_field).Threshold = app.Thresholds(st);
+    app.Seg_Params.(stain_field).ThresholdDir = app.ThresholdDirs(st);
+    app.Seg_Params.(stain_field).MinSize = app.MinSizes(st);
+    app.Seg_Params.(stain_field).Splitting = app.Splittings(st);
+
 end
 
 

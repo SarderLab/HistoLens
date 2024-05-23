@@ -12,20 +12,25 @@ feat_row = zeros(1,length(feat_idxes));
 
 % Parameters used in feature extraction
 nucpixradius = 2;
-min_object_size = 20;
+min_object_size = 15;
 
 % Each compartment mask from compartment image
-pas_mask = comp_img(:,:,1);
-lum_mask = comp_img(:,:,2);
-nuc_mask = comp_img(:,:,3);
+if size(comp_img,3)==3
+    pas_mask = comp_img(:,:,1);
+    lum_mask = comp_img(:,:,2);
+    nuc_mask = comp_img(:,:,3);
+    
+    pas_mask = ~bwareaopen(~pas_mask,min_object_size);
+    pas_mask = bwareaopen(pas_mask,min_object_size);
+    
+    lum_mask = bwareaopen(lum_mask,min_object_size);
+    lum_mask = imfill(lum_mask,'holes');
+    
+    boundary_mask = pas_mask|lum_mask|nuc_mask;
+else
+    boundary_mask = squeeze(sum(comp_img,3))>0;
+end
 
-pas_mask = ~bwareaopen(~pas_mask,min_object_size);
-pas_mask = bwareaopen(pas_mask,min_object_size);
-
-lum_mask = bwareaopen(lum_mask,min_object_size);
-lum_mask = imfill(lum_mask,'holes');
-
-boundary_mask = pas_mask|lum_mask|nuc_mask;
 boundary_mask = bwpropfilt(boundary_mask,'Area',1);
 
 % Glomerular distance transform (Distance from center of glomerulus)
@@ -49,17 +54,19 @@ gdist2 = (gdist2-max(gdist2(:))*-1);
 gdist2(~boundary_mask) = 0;
 
 %% Textural and compartment containment features
-grayPAS = rgb2gray(img);
-grayPAS(~pas_mask) = NaN;
-grayLum = rgb2gray(img);
-grayLum(~lum_mask) = NaN;
-grayNuc = rgb2gray(img);
-grayNuc(~nuc_mask) = NaN;
-
-% Composite images with each compartment in the first channel
-compLum = cat(3,lum_mask,pas_mask,nuc_mask);
-compPAS = comp_img;
-compNuc = cat(3,nuc_mask,lum_mask,pas_mask);
+if size(comp_img,3)==3
+    grayPAS = rgb2gray(img);
+    grayPAS(~pas_mask) = NaN;
+    grayLum = rgb2gray(img);
+    grayLum(~lum_mask) = NaN;
+    grayNuc = rgb2gray(img);
+    grayNuc(~nuc_mask) = NaN;
+    
+    % Composite images with each compartment in the first channel
+    compLum = cat(3,lum_mask,pas_mask,nuc_mask);
+    compPAS = comp_img;
+    compNuc = cat(3,nuc_mask,lum_mask,pas_mask);
+end
 
 % Going through feature indices and calculating features that are contained
 % within the array 
@@ -941,4 +948,14 @@ if any(ismember(feat_idxes,(434:449)))
     feat_row(1,int_idx) = feat_subgroup(overlap-433);
 end    
     
+if any(feat_idxes>448)
+    
+    custom_feat_idxes = feat_idxes(find(feat_idxes>448));
+    custom_features = Extract_Custom_Features(img,comp_img,custom_feat_idxes,mpp);
+    
+    feat_row(1,find(feat_idxes>449)) = custom_features;
+    
+end
+
+
 
