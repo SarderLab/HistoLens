@@ -75,7 +75,7 @@ for st = 1:length(structures)
 end
                     
 % Updating Feature Ranks dropdown
-app.FeatureRankingsUsedDropDown.Items = app.Feat_Rank.(app.Structure_Idx_Name).AllRanks;
+app.FeatureRankingsUsedDropDown.Items = [{"None"};app.Feat_Rank.(app.Structure_Idx_Name).AllRanks];
 
 
 
