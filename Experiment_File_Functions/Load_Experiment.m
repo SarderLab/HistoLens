@@ -54,6 +54,7 @@ for st = 1:length(structure_list)
 end
 app.Structure_Names(1,:) = [];
 
+
 % Loading slide-level compartment segmentation values
 slide_names = fieldnames(exp_struct);
 slide_names = slide_names(contains(slide_names,'Slide_Idx'));
@@ -63,6 +64,16 @@ for slide = 1:length(slide_names)
     app.Seg_Params.(current_slide).CompartmentSegmentation = Load_Compartment_Segmentation(comp_seg);
 end
 
+% Getting the Stain_Names from the last compartment segmentation set
+comp_seg_fields = fieldnames(app.Seg_Params.(current_slide).CompartmentSegmentation);
+stain_idx_names = comp_seg_fields(contains(comp_seg_fields,'Stain'));
+app.Stain_Names = cell(1,1);
+for st = 1:length(stain_idx_names)
+    app.Stain_Names = [app.Stain_Names;{app.Seg_Params.(current_slide).CompartmentSegmentation.(stain_idx_names{st}).name{1}}];
+end
+app.Stain_Names(1) = [];
+
+% Loading features
 for st = 1:length(structure_list)
     structure_name = structure_list{st};
     structure_idx_name = strcat('Structure_',num2str(st));

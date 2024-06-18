@@ -10,8 +10,8 @@ if any(ismember(comp_fields,{'ColorDeconvolution','Colorspace'}))
     if any(ismember(comp_fields,'Colorspace'))
         comp_seg_struct.Colorspace = comp_seg.Colorspace;
     end
-    for c = comp_list
-        comp = c{1};
+    for c = 1:length(comp_list)
+        comp = comp_list{c};
         
         comp_seg_struct.(comp).name = comp_seg.(comp).name;
         comp_seg_struct.(comp).Channel = comp_seg.(comp).Channel;
@@ -25,17 +25,5 @@ else
     % For custom path inputting
     comp_seg_struct.Path = comp_seg.Path;
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
