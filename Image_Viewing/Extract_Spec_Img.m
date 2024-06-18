@@ -117,12 +117,13 @@ end
 if ~isempty(app.Baseline_MPP)
     mpp_scale = mpp/app.Baseline_MPP;
     
-    % Resizing images according to mpp_scale
-    raw_I = imresize(raw_I,mpp_scale,'bilinear');
-    norm_I = imresize(norm_I,mpp_scale,'bilinear');
-    mask = imresize(mask,mpp_scale,'bilinear');
-    composite = imresize(composite,mpp_scale,'bilinear');
-
+    if ~isnan(mpp_scale)
+        % Resizing images according to mpp_scale
+        raw_I = imresize(raw_I,mpp_scale,'bilinear');
+        norm_I = imresize(norm_I,mpp_scale,'bilinear');
+        mask = imresize(mask,mpp_scale,'bilinear');
+        composite = imresize(composite,mpp_scale,'bilinear');
+    end
 end
 
 

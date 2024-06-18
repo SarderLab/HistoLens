@@ -1,9 +1,5 @@
 % --- Function to view compartment in addition to feature map
-function Comp_Peeking(app,src,event,i)
-
-src
-event
-i
+function Comp_Peeking(src,event,i,app)
 
 this_comp = i;
 if strcmp(app.Image_Name_Label.Visible,'on')
@@ -34,36 +30,22 @@ end
 function Peek(img_ax, color, img, map, compartment, comp_idx, app, event)
 
 % Getting the buttons to say the right thing
-if comp_idx==1
-    if strcmp(app.PAS_Butt.Text,'PAS+')
-        app.PAS_Butt.Text = 'Un-See PAS+';
-        unsee = false;
-    else
-        app.PAS_Butt.Text = 'PAS+';
-        unsee = true;
-    end
-    vis_color = 'magenta';
+stain_name = app.Stain_Names{comp_idx};
+vis_colors = {'magenta','yellow','cyan'};
+if comp_idx<=length(vis_colors)
+    vis_color = vis_colors{comp_idx};
+else
+    vis_color = [rand,rand,rand];
 end
-if comp_idx==2
-    if strcmp(app.Lum_Butt.Text,'Luminal Space')
-        app.Lum_Butt.Text = 'Un-See Lumen';
-        unsee = false;
-    else
-        app.Lum_Butt.Text = 'Luminal Space';
-        unsee = true;
-    end
-    vis_color = 'yellow';
+
+if strcmp(event.Source.Text,stain_name)
+    event.Source.Text = strcat('Un-See_',stain_name);
+    unsee = false;
+else
+    event.Source.Text = stain_name;
+    unsee = true;
 end
-if comp_idx==3
-    if strcmp(app.Nuc_Butt.Text,'Nuclei')
-        app.Nuc_Butt.Text = 'Un-See Nuclei';
-        unsee = false;
-    else
-        app.Nuc_Butt.Text = 'Nuclei';
-        unsee = true;
-    end
-    vis_color = 'cyan';
-end
+
 
 % Something that allows iteration between the two colors and images
 if iscell(map)

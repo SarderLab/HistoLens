@@ -36,7 +36,6 @@ if ~app.Comparing
         colormap jet
         % Switching to un-scaled viewing
         app.im = imagesc(app.Img_Ax,app.map);
-        %app.im = imshow(app.map);
         app.im.AlphaData = app.Heat_Slide.Value;
         hold off
         
@@ -135,7 +134,6 @@ else
             colormap jet
             % Removing scaled map viewing
             app.im_red = imagesc(app.Red_Img_Ax,app.map{1});
-            %handles.im_red = imshow(handles.map{1});
             app.im_red.AlphaData = app.Heat_Slide.Value;
             hold off
             
@@ -251,7 +249,6 @@ else
             colormap jet
             % Removing re-scaling of feature maps
             app.im_blue = imagesc(app.Blue_Img_Ax,app.map{2});
-            %handles.im_blue = imshow(handles.map{2});
             app.im_blue.AlphaData = get(app.Heat_Slide,'Value');
             hold off
 
@@ -285,7 +282,6 @@ else
                 cla(app.Rel_Ax)
                 app.Rel_Feat_Table.Data = {};
             end
-            %if ~isempty(app.Full_Feature_set)
             % Annotating image position in feature space for PCA plots
             if length(app.map_idx)>1
                 try
@@ -318,7 +314,6 @@ else
                         label_vals(1,1),'\leftarrow Blue Image','ButtonDownFcn',@(clicked,event)Grab_Image(clicked,event,app));
                 end
             end
-            %end
             
         end
     end
@@ -361,7 +356,6 @@ else
 
             colormap jet
             app.im_red = imagesc(app.Red_Img_Ax,app.map{1});
-            %handles.im_red = imshow(handles.map{1});
             app.im_red.AlphaData = app.Heat_Slide.Value;
             hold off
 
@@ -380,7 +374,6 @@ else
 
             colormap jet
             app.im_blue = imagesc(app.Blue_Img_Ax, app.map{2});
-            %handles.im_blue = imshow(handles.map{2});
             app.im_blue.AlphaData = app.Heat_Slide.Value;
             hold off
             
