@@ -35,7 +35,7 @@ for slide = 1:length(dir_contents)
         ann_path = ann_path{1};
     end
 
-    if ~strcmp(wsi_ext,'svs')
+    if ~ismember(wsi_ext,{'svs','tif','tiff','jpeg','jpg','png'})
         slide_pointer = openslide_open(strcat(app.Slide_Path,filesep,slide_name));
     else
         slide_pointer = [];
@@ -85,7 +85,7 @@ for slide = 1:length(dir_contents)
                 norm_I = raw_I;
             end
 
-            composite = Comp_Seg_Gen(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
+            composite = Comp_Seg(app.Seg_Params.(slide_idx_name).CompartmentSegmentation,norm_I,mask);
 
             save_name = strcat(save_folder,filesep,strrep(slide_name,strcat('.',wsi_ext),''),num2str(img_ids(img)));
             comp_save_name = strcat(save_name,'_comp.png');
