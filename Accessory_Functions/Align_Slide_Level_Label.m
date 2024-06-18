@@ -83,8 +83,6 @@ for s = 1:length(all_structures)
             app.Aligned_Labels.(current_structure).(label_idx_name).Name = current_col;
             app.Aligned_Labels.(current_structure).AllLabels = [app.Aligned_Labels.(current_structure).AllLabels;{current_col}];
         
-            % Adding label to SelectLabelDropDown Items
-            %app.SelectLabelDropDown.Items = [app.SelectLabelDropDown.Items,current_col];
         end
     end
 end

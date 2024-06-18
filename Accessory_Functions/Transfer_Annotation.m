@@ -291,9 +291,6 @@ pause(1)
 delete(wb)
 
 % Refreshing analysis after transferring annotation
-app.PAS_Butt.Text = 'PAS+';
-app.Lum_Butt.Text = 'Luminal Space';
-app.Nuc_Butt.Text = 'Nuclei';
 event = [];
 
 app.New_Label = false;
