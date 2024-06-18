@@ -85,8 +85,12 @@ if ~app.Comparing
         % Saving notes table to the pre-specified notes filename
         writetable(app.Notes.(app.Structure_Idx_Name),app.Notes_File.(app.Structure_Idx_Name));
     else
-        app.Notes.(app.Structure_Idx_Name).Notes{strcmp(app.Notes.(app.Structure_Idx_Name).ImgLabel,selected)} = {''};
-        writetable(app.Notes.(app.Structure_Idx_Name),app.Notes_File.(app.Structure_Idx_Name));
+        try
+            app.Notes.(app.Structure_Idx_Name).Notes{strcmp(app.Notes.(app.Structure_Idx_Name).ImgLabel,selected)} = {''};
+            writetable(app.Notes.(app.Structure_Idx_Name),app.Notes_File.(app.Structure_Idx_Name));
+        catch
+            display('Notes not added')
+        end
     end
 else
     selected1 = app.Current_Name{1};    
