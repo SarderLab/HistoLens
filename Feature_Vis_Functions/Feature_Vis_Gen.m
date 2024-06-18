@@ -8,7 +8,6 @@ function Feature_Vis_Gen(app,event)
     w_in_range = app.w_in_range;
     texture_window = app.texture_window;
 
-
     vis_params = [min_object_size,nucpixradius,w_in_range,texture_window];
     if ~app.Comparing
 
@@ -82,9 +81,13 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
     feat_count = 0;
     
     if size(composite,3)==3
-        pas_mask = composite(:,:,1);
-        lum_mask = composite(:,:,2);
-        nuc_mask = composite(:,:,3);
+
+        % Updating for hematoxylin-first sub-compartment segmentation
+        % Order is hematoxylin/nuclei-PAS+/eosinophilic-background/luminal
+        % space
+        pas_mask = composite(:,:,2);
+        lum_mask = composite(:,:,3);
+        nuc_mask = composite(:,:,1);
         boundary_mask = pas_mask|lum_mask|nuc_mask;
     else
         boundary_mask = squeeze(sum(composite,3))>0;
@@ -1208,7 +1211,7 @@ function all_feature_vis = Get_Feat_Vis(I,mask,composite,features_needed,all_fea
     if any(features_needed>448)
         % Custom feature visualizations added here
         
-        [all_feature_vis,feat_count] = Vis_Custom_Features(I,mask,composite,features_needed,all_feature_vis,vis_params);
+        [all_feature_vis,feat_count] = Vis_Custom_Features(I,mask,composite,features_needed,all_feature_vis,vis_params,feat_count);
         update_waitbar(wb,feat_count,num_feat)
 
     end
