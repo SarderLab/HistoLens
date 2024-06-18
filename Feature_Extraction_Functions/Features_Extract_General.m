@@ -16,9 +16,13 @@ min_object_size = 15;
 
 % Each compartment mask from compartment image
 if size(comp_img,3)==3
-    pas_mask = comp_img(:,:,1);
-    lum_mask = comp_img(:,:,2);
-    nuc_mask = comp_img(:,:,3);
+
+    % Updated for hematoxylin-first sub-compartment segmentation
+    % Order is hematoxylin-PAS+/eosinophilic (for H&E)-background/luminal
+    % space
+    pas_mask = comp_img(:,:,2);
+    lum_mask = comp_img(:,:,3);
+    nuc_mask = comp_img(:,:,1);
     
     pas_mask = ~bwareaopen(~pas_mask,min_object_size);
     pas_mask = bwareaopen(pas_mask,min_object_size);
@@ -67,6 +71,7 @@ if size(comp_img,3)==3
     compPAS = comp_img;
     compNuc = cat(3,nuc_mask,lum_mask,pas_mask);
 end
+
 
 % Going through feature indices and calculating features that are contained
 % within the array 
@@ -760,73 +765,11 @@ if any(ismember(feat_idxes,(404:418)))
         
     end
     
-    [overlap,int_idx,~] = intersect(feat_idxes,(404:414));
+    [overlap,int_idx,~] = intersect(feat_idxes,(404:418));
     feat_row(1,int_idx) = feat_subgroup(overlap-403);
 end
-
-
+    
 if any(ismember(feat_idxes,(419:433)))
-    
-    [~,sat,~]=colour_deconvolution(img,'H PAS');
-    sat=1-im2double(sat);
-    sat=imadjust(sat,[],[],3);
-
-
-    mems=imbinarize(sat,adaptthresh(sat,0.3));
-    blim=boundary_w_mem;
-    indel=imerode(blim,strel('disk',10));
-    blim(indel)=0;
-    tbm=imreconstruct(blim&mems,mems);
-    tbm(~boundary_w_mem)=0;
-    tbm=bwareaopen(tbm,50);
-    tbm=imclose(tbm,strel('disk',1));
-    
-    tbmdist = gdist;
-    tbmdist(~tbm) = 0;
-    tbm_areas = regionprops(tbm,'SubArrayIdx');
-    
-    uobs = bwlabel(tbm);
-    stats_tbm = [];
-    for i = 1:numel(tbm_areas)
-        loc = tbm_areas(i).SubArrayIdx;
-        smallmask = uobs(loc{:});
-        
-        dtvals = nucdist(loc{:}).*double(smallmask==i);
-        if sum(dtvals(:))==0
-            ovals = zeros(1,3);
-        else
-            ovals = [mean(dtvals(:)),min(dtvals(dtvals>0)),max(dtvals(:))];
-        end
-        stats_tbm = [stats_tbm;ovals];
-    end
-
-    feat_subgroup = zeros(1,15);
-    if numel(tbm_areas)>0
-        feat_subgroup(1,1) = max(stats_tbm(:,1));
-        feat_subgroup(1,2) = max(stats_tbm(:,2));
-        feat_subgroup(1,3) = max(stats_tbm(:,3));
-        
-        feat_subgroup(1,4) = mean(stats_tbm(:,1));
-        feat_subgroup(1,5) = mean(stats_tbm(:,2));
-        feat_subgroup(1,6) = mean(stats_tbm(:,3));
-        feat_subgroup(1,7) = min(stats_tbm(:,1));
-        feat_subgroup(1,8) = min(stats_tbm(:,2));
-        feat_subgroup(1,9) = min(stats_tbm(:,3));
-        feat_subgroup(1,10) = var(stats_tbm(:,1));
-        feat_subgroup(1,11) = var(stats_tbm(:,2));
-        feat_subgroup(1,12) = var(stats_tbm(:,3));
-        feat_subgroup(1,13) = median(stats_tbm(:,1));
-        feat_subgroup(1,14) = median(stats_tbm(:,2));
-        feat_subgroup(1,15) = median(stats_tbm(:,3));
-        
-    end
-    
-    [overlap,int_idx,~] = intersect(feat_idxes,(434:449));
-    feat_row(1,int_idx) = feat_subgroup(overlap-433);
-end    
-    
-    
-if any(ismember(feat_idxes,(434:449)))
     
     [~,sat,~] = colour_deconvolution(img,'H PAS');
     sat = 1-im2double(sat);
@@ -887,7 +830,7 @@ if any(ismember(feat_idxes,(434:449)))
     feat_row(1,int_idx) = feat_subgroup(overlap-418);
 end    
 
-if any(ismember(feat_idxes,(434:449)))
+if any(ismember(feat_idxes,(434:448)))
     
     [~,sat,~] = colour_deconvolution(img,'H PAS');
     sat = 1-im2double(sat);
@@ -944,16 +887,16 @@ if any(ismember(feat_idxes,(434:449)))
         
     end
     
-    [overlap,int_idx,~] = intersect(feat_idxes,(434:449));
+    [overlap,int_idx,~] = intersect(feat_idxes,(434:448));
     feat_row(1,int_idx) = feat_subgroup(overlap-433);
 end    
     
-if any(feat_idxes>448)
+if any(find(feat_idxes>448))
     
     custom_feat_idxes = feat_idxes(find(feat_idxes>448));
     custom_features = Extract_Custom_Features(img,comp_img,custom_feat_idxes,mpp);
     
-    feat_row(1,find(feat_idxes>449)) = custom_features;
+    feat_row(1,find(feat_idxes>448)) = custom_features;
     
 end
 
