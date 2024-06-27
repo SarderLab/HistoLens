@@ -74,7 +74,7 @@ if ~isempty(slide_idx)
         [bbox_coords,mask_coords] = Read_JSON_Annotations(json_path,img_id);
     end
 
-    if strcmp(wsi_ext,'svs')
+    if ismember(wsi_ext,{'svs', 'png','jpg','jpeg','tif','tiff'})
         raw_I = imread(slide_path,'Index',1,'PixelRegion',{bbox_coords(3:4),bbox_coords(1:2)});
     else
         % Reading image with openslide
