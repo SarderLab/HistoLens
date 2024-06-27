@@ -103,7 +103,7 @@ for s = 1:length(slide_names)
         end
     end
 
-    slide_filepath = strcat(slide_path,filesep,slide,'.svs');
+    slide_filepath = strcat(slide_path,filesep,slide,'.',wsi_ext);
 
     % Unique structure identifier
     slide_id = slide;

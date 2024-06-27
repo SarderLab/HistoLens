@@ -141,14 +141,14 @@ if any(ismember(feat_idxes,(38:44)))
     distsM = getCompDists(pas_mask,gOutline,[rMean,cMean]);
     
     [overlap,int_idx,~] = intersect(feat_idxes,(38:44));
-    feat_row(1,int_idx) = feat_subgroup(overlap-37);
+    feat_row(1,int_idx) = distsM(overlap-37);
 end
 
 if any(ismember(feat_idxes,(45:51)))
     distsN = getCompDists(nuc_mask,gOutline,[rMean,cMean]);
     
     [overlap,int_idx,~] = intersect(feat_idxes,(45:51));
-    feat_row(1,int_idx) = feat_subgroup(overlap-44);
+    feat_row(1,int_idx) = distsN(overlap-44);
 end
 
 if any(ismember(feat_idxes,52))
